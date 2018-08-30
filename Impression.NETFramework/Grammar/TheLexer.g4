@@ -1,13 +1,13 @@
 lexer grammar TheLexer
 	;
 
+ESC_QUOTE:  '\'';
+
 EMPTY_LITERAL: '\'' '\'';
 
-LITERAL: '\'' LITERAL_CONTENT '\'';
+LITERAL: '\'' (ESCAPED_SEQ|.)*? '\'' ;
 
-fragment LITERAL_CONTENT: (ESCAPED_SEQ|.)*? ;
-
-fragment ESCAPED_SEQ: '\\\'' | '\\\\' ; // 2-char sequences \" and \\
+ESCAPED_SEQ: '\\\'' | '\\\\' ; // 2-char sequences \" and \\
 
 COMMENT : '/*' .*? '*/' -> skip ; 
 

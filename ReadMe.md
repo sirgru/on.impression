@@ -55,16 +55,16 @@ There exists a large amount of knowledge and techniques around implementing regu
 
 ### Literals & Comments:
 
-| Imp:  | Regex: |
-| ----- | ------ |
-| 'abc' | abc    |
-
 | Imp:         | Regex:        |
+| ------------ | ------------- |
+| 'abc'        | abc           |
 | ------------ | ------------- |
 | /* comment*/ | (?# comment ) |
 
 
 ### Escapes:
+
+Escapes appear inside literals.
 
 | Imp:   | Regex: | Explanation:                                                                                |
 | ------ | ------ | ------------------------------------------------------------------------------------------- |
@@ -80,6 +80,8 @@ There exists a large amount of knowledge and techniques around implementing regu
 | \xnn   | \xnn   | Uses hexadecimal representation to specify a character (nn consists of exactly two digits). |
 | \cX    | \cX    | Matches the ASCII control char specified by X or x, the letter of the control character.    |
 | \unnnn | \unnnn | Matches a Unicode character by using hexadecimal representation (exactly four digits).      |
+
+If the string literal must contain a backslash, it must be escaped with another backslash (\u005C).
 
 <!-- 
 Convert all language constructs to hex. \xnn

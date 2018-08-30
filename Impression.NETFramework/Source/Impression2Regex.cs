@@ -4,15 +4,15 @@ using Impression.NETFramework.Grammar;
 namespace ES.ON.Impression {
 	public class ImpressionToRegex {
 		public static string Convert(string input) {
-			AntlrInputStream inputStream = new AntlrInputStream(input);
-			TheLexer lexer = new TheLexer(inputStream);
-			CommonTokenStream commonTokenStream = new CommonTokenStream(lexer);
-			TheParser parser = new TheParser(commonTokenStream);
+			var inputStream = new AntlrInputStream(input);
+			var lexer = new TheLexer(inputStream);
+			var commonTokenStream = new CommonTokenStream(lexer);
+			var parser = new TheParser(commonTokenStream);
 
-			TheParser.StartContext expressionContext = parser.start();
-			Visitor visitor = new Visitor();
+			var context = parser.start();
+			var visitor = new Visitor();
 
-			return visitor.Visit(expressionContext);
+			return visitor.Visit(context);
 		}
 	}
 }

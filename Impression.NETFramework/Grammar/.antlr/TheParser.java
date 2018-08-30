@@ -16,17 +16,19 @@ public class TheParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		EMPTY_LITERAL=1, LITERAL=2, COMMENT=3, WS=4;
+		ESC_QUOTE=1, EMPTY_LITERAL=2, LITERAL=3, ESCAPED_SEQ=4, COMMENT=5, WS=6;
 	public static final int
-		RULE_start = 0, RULE_expr = 1;
+		RULE_start = 0, RULE_literal = 1;
 	public static final String[] ruleNames = {
-		"start", "expr"
+		"start", "literal"
 	};
 
 	private static final String[] _LITERAL_NAMES = {
+		null, "'''"
 	};
 	private static final String[] _SYMBOLIC_NAMES = {
-		null, "EMPTY_LITERAL", "LITERAL", "COMMENT", "WS"
+		null, "ESC_QUOTE", "EMPTY_LITERAL", "LITERAL", "ESCAPED_SEQ", "COMMENT", 
+		"WS"
 	};
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
 
@@ -78,11 +80,11 @@ public class TheParser extends Parser {
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
 	public static class StartContext extends ParserRuleContext {
-		public List<ExprContext> expr() {
-			return getRuleContexts(ExprContext.class);
+		public List<LiteralContext> literal() {
+			return getRuleContexts(LiteralContext.class);
 		}
-		public ExprContext expr(int i) {
-			return getRuleContext(ExprContext.class,i);
+		public LiteralContext literal(int i) {
+			return getRuleContext(LiteralContext.class,i);
 		}
 		public StartContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -104,7 +106,7 @@ public class TheParser extends Parser {
 				{
 				{
 				setState(4);
-				expr();
+				literal();
 				}
 				}
 				setState(7); 
@@ -124,32 +126,51 @@ public class TheParser extends Parser {
 		return _localctx;
 	}
 
-	public static class ExprContext extends ParserRuleContext {
-		public TerminalNode EMPTY_LITERAL() { return getToken(TheParser.EMPTY_LITERAL, 0); }
-		public TerminalNode LITERAL() { return getToken(TheParser.LITERAL, 0); }
-		public ExprContext(ParserRuleContext parent, int invokingState) {
+	public static class LiteralContext extends ParserRuleContext {
+		public LiteralContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_expr; }
+		@Override public int getRuleIndex() { return RULE_literal; }
+	 
+		public LiteralContext() { }
+		public void copyFrom(LiteralContext ctx) {
+			super.copyFrom(ctx);
+		}
+	}
+	public static class LiteralWithContentContext extends LiteralContext {
+		public TerminalNode LITERAL() { return getToken(TheParser.LITERAL, 0); }
+		public LiteralWithContentContext(LiteralContext ctx) { copyFrom(ctx); }
+	}
+	public static class EmptyLiteralContext extends LiteralContext {
+		public TerminalNode EMPTY_LITERAL() { return getToken(TheParser.EMPTY_LITERAL, 0); }
+		public EmptyLiteralContext(LiteralContext ctx) { copyFrom(ctx); }
 	}
 
-	public final ExprContext expr() throws RecognitionException {
-		ExprContext _localctx = new ExprContext(_ctx, getState());
-		enterRule(_localctx, 2, RULE_expr);
-		int _la;
+	public final LiteralContext literal() throws RecognitionException {
+		LiteralContext _localctx = new LiteralContext(_ctx, getState());
+		enterRule(_localctx, 2, RULE_literal);
 		try {
-			enterOuterAlt(_localctx, 1);
-			{
-			setState(9);
-			_la = _input.LA(1);
-			if ( !(_la==EMPTY_LITERAL || _la==LITERAL) ) {
-			_errHandler.recoverInline(this);
-			}
-			else {
-				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-				_errHandler.reportMatch(this);
-				consume();
-			}
+			setState(11);
+			_errHandler.sync(this);
+			switch (_input.LA(1)) {
+			case EMPTY_LITERAL:
+				_localctx = new EmptyLiteralContext(_localctx);
+				enterOuterAlt(_localctx, 1);
+				{
+				setState(9);
+				match(EMPTY_LITERAL);
+				}
+				break;
+			case LITERAL:
+				_localctx = new LiteralWithContentContext(_localctx);
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(10);
+				match(LITERAL);
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
 			}
 		}
 		catch (RecognitionException re) {
@@ -164,10 +185,11 @@ public class TheParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\6\16\4\2\t\2\4\3"+
-		"\t\3\3\2\6\2\b\n\2\r\2\16\2\t\3\3\3\3\3\3\2\2\4\2\4\2\3\3\2\3\4\2\f\2"+
-		"\7\3\2\2\2\4\13\3\2\2\2\6\b\5\4\3\2\7\6\3\2\2\2\b\t\3\2\2\2\t\7\3\2\2"+
-		"\2\t\n\3\2\2\2\n\3\3\2\2\2\13\f\t\2\2\2\f\5\3\2\2\2\3\t";
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\b\20\4\2\t\2\4\3"+
+		"\t\3\3\2\6\2\b\n\2\r\2\16\2\t\3\3\3\3\5\3\16\n\3\3\3\2\2\4\2\4\2\2\2\17"+
+		"\2\7\3\2\2\2\4\r\3\2\2\2\6\b\5\4\3\2\7\6\3\2\2\2\b\t\3\2\2\2\t\7\3\2\2"+
+		"\2\t\n\3\2\2\2\n\3\3\2\2\2\13\16\7\4\2\2\f\16\7\5\2\2\r\13\3\2\2\2\r\f"+
+		"\3\2\2\2\16\5\3\2\2\2\4\t\r";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

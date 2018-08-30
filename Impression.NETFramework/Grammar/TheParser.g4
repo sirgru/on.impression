@@ -6,10 +6,9 @@ options
 	tokenVocab = TheLexer;
 }
 
-start: expr+;
+start: literal+;
 
-expr: EMPTY_LITERAL | LITERAL; 
-
+literal:  EMPTY_LITERAL #EmptyLiteral | LITERAL #LiteralWithContent;
 
 
 

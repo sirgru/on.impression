@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Source\ErrorListener.cs" />
     <Compile Include="Source\Impression2Regex.cs" />
     <Compile Include="Grammar\TheLexer.g4.cs">
       <DependentUpon>TheLexer.g4</DependentUpon>
