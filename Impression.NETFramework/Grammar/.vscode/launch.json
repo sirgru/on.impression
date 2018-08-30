@@ -1,0 +1,15 @@
+{
+	"version": "2.0.0",
+	"configurations": [
+		{
+			"name": "ANTLR4 Debug",
+			"type": "antlr-debug",
+			"request": "launch",
+			"input": "GrammarDebug.txt",
+			"grammar": "TheParser.g4",
+			"startRule": "start",
+			"printParseTree": false,
+			"visualParseTree": true
+		}
+	]
+}
