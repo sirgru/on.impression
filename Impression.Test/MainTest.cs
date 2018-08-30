@@ -38,6 +38,15 @@ namespace Impression.Test {
 				parser.AddErrorListener(errorListener);
 			}
 		}
-		
+
+		[Test]
+		public void InvalidLiteral() {
+			var ps = new ParserState(" 'abc");
+			var context = ps.parser.start();
+
+			var offendingSymbol = ps.errorListener.lastError.symbol;
+			Assert.AreEqual(1, offendingSymbol.Column);
+			Assert.AreEqual("'", offendingSymbol.Text);
+		}
 	}
 }
