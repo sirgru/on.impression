@@ -18,35 +18,50 @@ namespace Impression.Test {
 		}
 	}
 
+	struct ParserState {
+		public TheParser   parser;
+		public TheLexer    lexer;
+		public ParserErrorListener    errorListener;
+
+		public ParserState(string input) {
+			var inputStream = new AntlrInputStream(input);
+			lexer = new TheLexer(inputStream);
+			var commonTokenStream = new CommonTokenStream(lexer);
+			parser = new TheParser(commonTokenStream);
+
+			StringWriter writer = new StringWriter();
+			errorListener = new ParserErrorListener(writer);
+			lexer.RemoveErrorListeners();
+			parser.RemoveErrorListeners();
+			parser.AddErrorListener(errorListener);
+		}
+	}
+
 	[TestFixture]
 	public class ParserTests {
-		struct ParserState {
-			public TheParser   parser;
-			public TheLexer    lexer;
-			public ErrorListener    errorListener;
-
-			public ParserState(string input) {
-				var inputStream = new AntlrInputStream(input);
-				lexer = new TheLexer(inputStream);
-				var commonTokenStream = new CommonTokenStream(lexer);
-				parser = new TheParser(commonTokenStream);
-
-				StringWriter writer = new StringWriter();
-				errorListener = new ErrorListener(writer);
-				lexer.RemoveErrorListeners();
-				parser.RemoveErrorListeners();
-				parser.AddErrorListener(errorListener);
-			}
-		}
-
 		[Test]
 		public void InvalidLiteral() {
 			var ps = new ParserState(" 'abc");
 			var context = ps.parser.start();
 
-			var offendingSymbol = ps.errorListener.lastError.symbol;
+			var offendingSymbol = ps.errorListener.lastError.token;
 			Assert.AreEqual(1, offendingSymbol.Column);
 			Assert.AreEqual("'", offendingSymbol.Text);
+		}
+	}
+
+	[TestFixture]
+	public class SemanticTests {
+		[Test]
+		public void EmptyLiteral() {
+			var ps = new ParserState(" '' ");
+			var context = ps.parser.start();
+			var visitor = new Visitor();
+			visitor.Visit(context);
+
+			var error = visitor.semanticErrorListener.lastError;
+			Assert.AreEqual("''", error.text);
+			Assert.AreEqual(1, error.charPositionInLine);
 		}
 	}
 }

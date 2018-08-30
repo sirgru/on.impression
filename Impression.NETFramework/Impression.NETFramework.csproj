@@ -46,7 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Source\ErrorListener.cs" />
+    <Compile Include="Source\ParserErrorListener.cs" />
     <Compile Include="Source\Impression2Regex.cs" />
     <Compile Include="Grammar\TheLexer.g4.cs">
       <DependentUpon>TheLexer.g4</DependentUpon>
@@ -55,6 +55,7 @@
       <DependentUpon>TheParser.g4</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Source\SemanticErrorListener.cs" />
     <Compile Include="Source\Visitor.cs" />
   </ItemGroup>
   <ItemGroup>

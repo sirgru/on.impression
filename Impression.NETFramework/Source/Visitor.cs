@@ -3,7 +3,9 @@ using Antlr4.Runtime.Tree;
 using Impression.NETFramework.Grammar;
 
 namespace ES.ON.Impression {
-	class Visitor : TheParserBaseVisitor<string> {
+	public class Visitor : TheParserBaseVisitor<string> {
+		public SemanticErrorListener semanticErrorListener { get; private set; } = new SemanticErrorListener();
+
 		string SequentiallyAggregateFromChildren(IParseTree context, string currentResult = "") {
 			for(int i = 0; i < context.ChildCount; i++) {
 				currentResult += Visit(context.GetChild(i));
@@ -37,6 +39,12 @@ namespace ES.ON.Impression {
 			content = content.Replace(@"-", @"\u002D");
 
 			return content;
+		}
+
+		public override string VisitEmptyLiteral([NotNull] TheParser.EmptyLiteralContext context) {
+			var token = context.EMPTY_LITERAL().Symbol;
+			semanticErrorListener.AddSemanticError(new SemanticErrorListener.ErrorData(token, "Empty literals aren't allowed."));
+			return "";
 		}
 	}
 }
