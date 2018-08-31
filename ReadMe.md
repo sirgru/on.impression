@@ -95,21 +95,22 @@ Character groups (classes) are denoted with `[]`. If a closing bracket must be u
 
 Empty sets ([]) aren't allowed.
 
-| Imp:                | Regex:         | Explanation:                                                                |
-| ------------------- | -------------- | --------------------------------------------------------------------------- |
-| [cg]                | [cg]           | Matches any single character in character group (class) cg                  |
-| not [cg]            | [^cg]          | Negation: Matches any single character that is not in class.                |
-| a..z + A..Z + [123] | [a-zA-Z123]    | Example of ranges.                                                          |
-| type IsCyrillic     | \p{IsCyrillic} | Matches any 1 character in the Unicode general category or named block. [1] |
-| not-type Lu         | \P{Lu}         | Not \p                                                                      |
-| w                   | \w             | Matches any word character.                                                 |
-| not w               | \W             | Not \w                                                                      |
-| ws                  | \s             | Matches any white-space character.                                          |
-| not ws              | \S             | Not \s                                                                      |
-| d                   | \d             | Matches any decimal digit.                                                  |
-| not d               | \D             | Not \d                                                                      |
+| Imp:                | Regex:         | Explanation:                                                            |
+| ------------------- | -------------- | ----------------------------------------------------------------------- |
+| [cg]                | [cg]           | Matches any single character in character group (class) cg              |
+| not [cg]            | [^cg]          | Negation: Matches any single character that is not in class.            |
+| a..z + A..Z + [123] | [a-zA-Z123]    | Example of ranges.                                                      |
+| a..z + [0-9] - [6]  | [a-z0-9-[6]]   | Character Class Subtraction. [1]                                        |
+| type IsCyrillic     | \p{IsCyrillic} | Matches any 1 character in the Unicode general category or named block. |
+| not-type Lu         | \P{Lu}         | Not \p                                                                  |
+| w                   | \w             | Matches any word character.                                             |
+| not w               | \W             | Not \w                                                                  |
+| ws                  | \s             | Matches any white-space character.                                      |
+| not ws              | \S             | Not \s                                                                  |
+| d                   | \d             | Matches any decimal digit.                                              |
+| not d               | \D             | Not \d                                                                  |
 
-[1] For multiple Types use type (T1, T2)
+[1] Subtraction has higher priority than addition, thus any additions after the subtraction are treated as belonging to the subtraction.
 
 <!-- 
 https://docs.microsoft.com/en-us/dotnet/standard/base-types/character-classes-in-regular-expressions#SupportedNamedBlocks

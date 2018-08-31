@@ -30,6 +30,7 @@ namespace ES.ON.Impression {
 			var enclosedContent = context.GetText();
 			var content = enclosedContent.Substring(1, enclosedContent.Length - 2);
 
+			content = content.Replace(@"\'", @"\u0027");
 			content = ConvertSpecialCharacters(content);
 
 			content = content.Replace(@".", @"\u002E");
@@ -39,7 +40,6 @@ namespace ES.ON.Impression {
 			content = content.Replace(@"}", @"\u007D");
 			content = content.Replace(@"(", @"\u0028");
 			content = content.Replace(@")", @"\u0029");
-			content = content.Replace(@"[", @"\u005B");
 			content = content.Replace(@"]", @"\u005D");
 			content = content.Replace(@"|", @"\u007C");
 			content = content.Replace(@"*", @"\u002A");
@@ -52,6 +52,7 @@ namespace ES.ON.Impression {
 			content = content.Replace(@"\b", @"\u0008");
 			content = content.Replace(@"\\", @"\u005C");
 			content = content.Replace(@"-", @"\u002D");
+			content = content.Replace(@"[", @"\u005B");
 			return content;
 		}
 
@@ -71,8 +72,8 @@ namespace ES.ON.Impression {
 			var enclosedContent = context.GetText();
 			var content = enclosedContent.Substring(1, enclosedContent.Length - 2);
 
-			content = ConvertSpecialCharacters(content);
 			content = content.Replace(@"\]", @"\u005D");
+			content = ConvertSpecialCharacters(content);
 			return "[" + content + "]";
 		}
 
@@ -92,6 +93,7 @@ namespace ES.ON.Impression {
 		string ConvertSpecialCharactersForRange(string content) {
 			content = content.Replace(@"\b", @"\u0008");
 			content = content.Replace(@"-", @"\u002D");
+			content = content.Replace(@"[", @"\u005B");
 			content = content.Replace(@"]", @"\u005D");
 			return content;
 		}
@@ -124,6 +126,13 @@ namespace ES.ON.Impression {
 
 		public override string VisitNotCharType([NotNull] TheParser.NotCharTypeContext context) {
 			return @"\P{" + GetContentFromCharType(context) + "}";
+		}
+
+		public override string VisitSubtractionSet([NotNull] TheParser.SubtractionSetContext context) {
+			var first = VisitSet(context.set(0));
+			var second = VisitSet(context.set(1));
+
+			return first.Substring(0, first.Length - 1) + "-" + second + "]";
 		}
 	}
 }

@@ -19,6 +19,7 @@ NOT: 'not';
 
 RANGE_SEPARATOR: '..';
 RANGE_JOIN: '+';
+RANGE_SUBTRACT: '-';
 
 CHAR_TYPE: 'type' ( ' ' | '\t')+ [a-zA-Z-]+;
 NOT_CHAR_TYPE: 'not-type' ( ' ' | '\t')+ [a-zA-Z-]+;

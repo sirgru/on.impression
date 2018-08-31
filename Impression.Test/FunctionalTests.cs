@@ -10,6 +10,11 @@ namespace Impression.Test {
 		}
 
 		[Test]
+		public void EscapedLiteral() {
+			Assert.AreEqual(@"ab\u0027c\u005C", ImpressionToRegex.Convert(@"'ab\'c\\'"));
+		}
+
+		[Test]
 		public void AdvancedLiteralsAndComments() {
 			Assert.AreEqual(@"abc /\u002A /\u002A \u002A/\u0007", ImpressionToRegex.Convert(@"'abc' ' /*' /* comment */ ' /* */' '\u0007'"));
 		}
@@ -32,6 +37,11 @@ namespace Impression.Test {
 		[Test]
 		public void BasicCombinationSet() {
 			Assert.AreEqual(@"[az]", ImpressionToRegex.Convert(@"[a] + [z]"));
+		}
+
+		[Test]
+		public void BasicSubtractionSet() {
+			Assert.AreEqual(@"[a-z-[p]]", ImpressionToRegex.Convert(@"a..z - [p]"));
 		}
 
 		[Test]
