@@ -7,6 +7,14 @@ namespace ES.ON.Impression {
 	public class Visitor : TheParserBaseVisitor<string> {
 		public SemanticErrorListener semanticErrorListener { get; private set; } = new SemanticErrorListener();
 
+		public string TryVisit([NotNull] IParseTree tree) {
+			try {
+				return Visit(tree);
+			} catch(SemanticErrorException) {
+				return null;
+			}
+		}
+
 		public override string VisitStart([NotNull] TheParser.StartContext context) {
 			return SequentiallyAggregateFromChildren(context);
 		}
@@ -74,6 +82,26 @@ namespace ES.ON.Impression {
 			return "[^" + positivePart.Substring(1, positivePart.Length - 1);
 		}
 
+		public override string VisitRangeSet([NotNull] TheParser.RangeSetContext context) {
+			var first = ConvertSpecialCharactersForRange(context.CHAR(0).GetText());
+			var second = ConvertSpecialCharactersForRange(context.CHAR(1).GetText());
+
+			return "[" + first + "-" + second + "]";
+		}
+
+		string ConvertSpecialCharactersForRange(string content) {
+			content = content.Replace(@"\b", @"\u0008");
+			content = content.Replace(@"-", @"\u002D");
+			content = content.Replace(@"]", @"\u005D");
+			return content;
+		}
+
+		public override string VisitCombinationSet([NotNull] TheParser.CombinationSetContext context) {
+			var first = VisitSet(context.set(0));
+			var second = VisitSet(context.set(1));
+			return first.Substring(0, first.Length - 1) + second.Substring(1, second.Length - 1);
+		}
+		
 		public override string VisitSet([NotNull] TheParser.SetContext context) {
 			switch(context) {
 				case TheParser.SetWithContentContext swcc: return VisitSetWithContent(swcc);

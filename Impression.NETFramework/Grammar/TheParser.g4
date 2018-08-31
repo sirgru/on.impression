@@ -14,11 +14,12 @@ literal
 	;
 
 set
-	: EMPTY_SET		# EmptySet
-	| SET			# SetWithContent
-	| ANY '..' ANY	# RangeSet
-	| set '+' set	# CombinationSet
+	: EMPTY_SET			# EmptySet
+	| SET				# SetWithContent
+	| CHAR '..' CHAR	# RangeSet
+	| set '+' set		# CombinationSet
 	;
 
 not_set: NOT set # SetNegative;
+
 

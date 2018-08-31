@@ -22,6 +22,10 @@ RANGE_JOIN: '+';
 
 WS: (' ' | '\t' | '\f') -> channel(HIDDEN);
 
-ANY: .;
+CHAR_TYPE: 'type';
+
+CHAR_TYPE_ID: [a-zA-Z-]+;
+
+CHAR: .;
 
 

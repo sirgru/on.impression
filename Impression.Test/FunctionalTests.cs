@@ -23,5 +23,20 @@ namespace Impression.Test {
 		public void BasicNegativeSets() {
 			Assert.AreEqual(@"[^ab*]", ImpressionToRegex.Convert(@" not [ab*]"));
 		}
+
+		[Test]
+		public void BasicRangeSet() {
+			Assert.AreEqual(@"[a-z]", ImpressionToRegex.Convert(@"a..z"));
+		}
+
+		[Test]
+		public void BasicCombinationSet() {
+			Assert.AreEqual(@"[az]", ImpressionToRegex.Convert(@"[a] + [z]"));
+		}
+
+		[Test]
+		public void AdvancedSet() {
+			Assert.AreEqual(@"[a-zA-Z123]", ImpressionToRegex.Convert(@"a..z + A..Z + [123]"));
+		}
 	}
 }

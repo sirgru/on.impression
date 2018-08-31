@@ -5,6 +5,7 @@ namespace Impression.Test {
 	public class ParserTests {
 		[TestCase(" [abc")]
 		[TestCase(" 'abc")]
+		[TestCase("not not [abc]")]
 		public void InvalidSet(string input) {
 			var ps = new ParserState(input);
 			var context = ps.parser.start();

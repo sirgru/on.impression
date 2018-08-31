@@ -18,7 +18,7 @@ public class TheParser extends Parser {
 	public static final int
 		QUOTE=1, ESCAPED_QUOTE=2, ESCAPED_DBL_BACKSLASH=3, ESCAPED_CLOSE_BRACKET=4, 
 		EMPTY_LITERAL=5, LITERAL=6, EMPTY_SET=7, SET=8, COMMENT=9, NOT=10, RANGE_SEPARATOR=11, 
-		RANGE_JOIN=12, WS=13, ANY=14;
+		RANGE_JOIN=12, WS=13, CHAR_TYPE=14, CHAR_TYPE_ID=15, CHAR=16;
 	public static final int
 		RULE_start = 0, RULE_literal = 1, RULE_set = 2, RULE_not_set = 3;
 	public static final String[] ruleNames = {
@@ -27,12 +27,12 @@ public class TheParser extends Parser {
 
 	private static final String[] _LITERAL_NAMES = {
 		null, "'''", "'\\''", "'\\\\'", "'\\]'", null, null, null, null, null, 
-		"'not'", "'..'", "'+'"
+		"'not'", "'..'", "'+'", null, "'type'"
 	};
 	private static final String[] _SYMBOLIC_NAMES = {
 		null, "QUOTE", "ESCAPED_QUOTE", "ESCAPED_DBL_BACKSLASH", "ESCAPED_CLOSE_BRACKET", 
 		"EMPTY_LITERAL", "LITERAL", "EMPTY_SET", "SET", "COMMENT", "NOT", "RANGE_SEPARATOR", 
-		"RANGE_JOIN", "WS", "ANY"
+		"RANGE_JOIN", "WS", "CHAR_TYPE", "CHAR_TYPE_ID", "CHAR"
 	};
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
 
@@ -132,7 +132,7 @@ public class TheParser extends Parser {
 					break;
 				case EMPTY_SET:
 				case SET:
-				case ANY:
+				case CHAR:
 					{
 					setState(9);
 					set(0);
@@ -151,7 +151,7 @@ public class TheParser extends Parser {
 				setState(13); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << EMPTY_LITERAL) | (1L << LITERAL) | (1L << EMPTY_SET) | (1L << SET) | (1L << NOT) | (1L << ANY))) != 0) );
+			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << EMPTY_LITERAL) | (1L << LITERAL) | (1L << EMPTY_SET) | (1L << SET) | (1L << NOT) | (1L << CHAR))) != 0) );
 			}
 		}
 		catch (RecognitionException re) {
@@ -248,9 +248,9 @@ public class TheParser extends Parser {
 		public EmptySetContext(SetContext ctx) { copyFrom(ctx); }
 	}
 	public static class RangeSetContext extends SetContext {
-		public List<TerminalNode> ANY() { return getTokens(TheParser.ANY); }
-		public TerminalNode ANY(int i) {
-			return getToken(TheParser.ANY, i);
+		public List<TerminalNode> CHAR() { return getTokens(TheParser.CHAR); }
+		public TerminalNode CHAR(int i) {
+			return getToken(TheParser.CHAR, i);
 		}
 		public RangeSetContext(SetContext ctx) { copyFrom(ctx); }
 	}
@@ -296,17 +296,17 @@ public class TheParser extends Parser {
 				match(SET);
 				}
 				break;
-			case ANY:
+			case CHAR:
 				{
 				_localctx = new RangeSetContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
 				setState(22);
-				match(ANY);
+				match(CHAR);
 				setState(23);
 				match(RANGE_SEPARATOR);
 				setState(24);
-				match(ANY);
+				match(CHAR);
 				}
 				break;
 			default:
@@ -409,15 +409,15 @@ public class TheParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\20)\4\2\t\2\4\3\t"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\22)\4\2\t\2\4\3\t"+
 		"\3\4\4\t\4\4\5\t\5\3\2\3\2\3\2\6\2\16\n\2\r\2\16\2\17\3\3\3\3\5\3\24\n"+
 		"\3\3\4\3\4\3\4\3\4\3\4\3\4\5\4\34\n\4\3\4\3\4\3\4\7\4!\n\4\f\4\16\4$\13"+
 		"\4\3\5\3\5\3\5\3\5\2\3\6\6\2\4\6\b\2\2\2+\2\r\3\2\2\2\4\23\3\2\2\2\6\33"+
 		"\3\2\2\2\b%\3\2\2\2\n\16\5\4\3\2\13\16\5\6\4\2\f\16\5\b\5\2\r\n\3\2\2"+
 		"\2\r\13\3\2\2\2\r\f\3\2\2\2\16\17\3\2\2\2\17\r\3\2\2\2\17\20\3\2\2\2\20"+
 		"\3\3\2\2\2\21\24\7\7\2\2\22\24\7\b\2\2\23\21\3\2\2\2\23\22\3\2\2\2\24"+
-		"\5\3\2\2\2\25\26\b\4\1\2\26\34\7\t\2\2\27\34\7\n\2\2\30\31\7\20\2\2\31"+
-		"\32\7\r\2\2\32\34\7\20\2\2\33\25\3\2\2\2\33\27\3\2\2\2\33\30\3\2\2\2\34"+
+		"\5\3\2\2\2\25\26\b\4\1\2\26\34\7\t\2\2\27\34\7\n\2\2\30\31\7\22\2\2\31"+
+		"\32\7\r\2\2\32\34\7\22\2\2\33\25\3\2\2\2\33\27\3\2\2\2\33\30\3\2\2\2\34"+
 		"\"\3\2\2\2\35\36\f\3\2\2\36\37\7\16\2\2\37!\5\6\4\4 \35\3\2\2\2!$\3\2"+
 		"\2\2\" \3\2\2\2\"#\3\2\2\2#\7\3\2\2\2$\"\3\2\2\2%&\7\f\2\2&\'\5\6\4\2"+
 		"\'\t\3\2\2\2\7\r\17\23\33\"";
