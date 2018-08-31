@@ -24,6 +24,11 @@ RANGE_SUBTRACT: '-';
 CHAR_TYPE: 'type' ( ' ' | '\t')+ [a-zA-Z-]+;
 NOT_CHAR_TYPE: 'not-type' ( ' ' | '\t')+ [a-zA-Z-]+;
 
+C_WORD: 'w';
+C_WHITE_SPACE: 'ws';
+C_DIGIT: 'd';
+WORD_BOUNDARY: 'wb';
+
 WS: (' ' | '\t' | '\f' | '\r' | '\n') -> channel(HIDDEN);
 
 CHAR: .;

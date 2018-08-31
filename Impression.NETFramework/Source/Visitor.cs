@@ -134,5 +134,31 @@ namespace ES.ON.Impression {
 
 			return first.Substring(0, first.Length - 1) + "-" + second + "]";
 		}
+
+		public override string VisitWord([NotNull] TheParser.WordContext context) {
+			return @"\w";
+		}
+		public override string VisitWhiteSpace([NotNull] TheParser.WhiteSpaceContext context) {
+			return @"\s";
+		}
+		public override string VisitDigit([NotNull] TheParser.DigitContext context) {
+			return @"\d";
+		}
+		public override string VisitWordBoundary([NotNull] TheParser.WordBoundaryContext context) {
+			return @"\b";
+		}
+
+		public override string VisitNotWord([NotNull] TheParser.NotWordContext context) {
+			return @"\W";
+		}
+		public override string VisitNotWhiteSpace([NotNull] TheParser.NotWhiteSpaceContext context) {
+			return @"\S";
+		}
+		public override string VisitNotDigit([NotNull] TheParser.NotDigitContext context) {
+			return @"\D";
+		}
+		public override string VisitNotWordBoundary([NotNull] TheParser.NotWordBoundaryContext context) {
+			return @"\B";
+		}
 	}
 }

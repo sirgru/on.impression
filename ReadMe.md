@@ -204,6 +204,9 @@ We always use m, n and s options and never use x option. We explicitly specify i
 | Imp:            | Regex:           | Explanation:                                |
 | --------------- | ---------------- | ------------------------------------------- |
 | nl              | \r?\n            | OS-independent newline.                     |
+| word            | \w+              | Word                                        |
+| int             | \d+              | Integral number                             |
+| whitespace      | \s+              | White space                                 |
 | c               | `[^\r\n]`        | Match exactly 1 character, except \r or \n. |
 | .               | `.` singleline   | Match exactly 1 character.                  |
 | c any-greedy    | `[^\r\n]*`       |                                             |

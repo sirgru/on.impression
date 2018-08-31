@@ -6,7 +6,7 @@ options
 	tokenVocab = TheLexer;
 }
 
-start: (literal | set | not_set | sub_set)+;
+start: (literal | set | not_set | sub_set | short | not_short)+;
 
 literal
 	: EMPTY_LITERAL	# EmptyLiteral
@@ -26,5 +26,15 @@ not_set: NOT set # SetNegative;
 
 sub_set: (set | not_set) '-' set       # SubtractionSet;
 
+short: 'w'  # Word
+    | 'ws'  # WhiteSpace
+    | 'd'   # Digit
+    | 'wb'  # WordBoundary
+    ;
 
-
+not_short:
+      NOT 'w'   # NotWord
+    | NOT 'ws'  # NotWhiteSpace
+    | NOT 'd'   # NotDigit
+    | NOT 'wb'  # NotWordBoundary
+    ;

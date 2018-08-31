@@ -50,6 +50,11 @@ namespace Impression.Test {
 		}
 
 		[Test]
+		public void AdvancedSubtraction() {
+			Assert.AreEqual(@"[a-z0-9-[p23]]", ImpressionToRegex.Convert(@"a..z + 0..9 - [p] + [23]"));
+		}
+
+		[Test]
 		public void BasicType() {
 			Assert.AreEqual(@"\p{Lu}", ImpressionToRegex.Convert(@"type Lu"));
 		}
@@ -57,6 +62,16 @@ namespace Impression.Test {
 		[Test]
 		public void BasicNotType() {
 			Assert.AreEqual(@"\P{Lu}", ImpressionToRegex.Convert(@"not-type		  Lu"));
+		}
+
+		[Test]
+		public void ShortsTests() {
+			Assert.AreEqual(@"\w\s\d\b", ImpressionToRegex.Convert(@"w ws d wb"));
+		}
+
+		[Test]
+		public void NotShortsTests() {
+			Assert.AreEqual(@"\W\S\D\B", ImpressionToRegex.Convert(@"not w not ws not d not wb"));
 		}
 	}
 }
