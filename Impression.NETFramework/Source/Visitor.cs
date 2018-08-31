@@ -111,5 +111,19 @@ namespace ES.ON.Impression {
 				default: throw new System.InvalidOperationException("Unhandled set type.");
 			}
 		}
+
+		string GetContentFromCharType(ParserRuleContext context) {
+			var text = context.GetText();
+			var split = text.Split(' ', '\t');
+			return split[split.Length - 1];
+		}
+
+		public override string VisitCharType([NotNull] TheParser.CharTypeContext context) {
+			return @"\p{" + GetContentFromCharType(context) + "}";
+		}
+
+		public override string VisitNotCharType([NotNull] TheParser.NotCharTypeContext context) {
+			return @"\P{" + GetContentFromCharType(context) + "}";
+		}
 	}
 }

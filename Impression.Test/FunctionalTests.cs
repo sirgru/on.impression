@@ -38,5 +38,15 @@ namespace Impression.Test {
 		public void AdvancedSet() {
 			Assert.AreEqual(@"[a-zA-Z123]", ImpressionToRegex.Convert(@"a..z + A..Z + [123]"));
 		}
+
+		[Test]
+		public void BasicType() {
+			Assert.AreEqual(@"\p{Lu}", ImpressionToRegex.Convert(@"type Lu"));
+		}
+
+		[Test]
+		public void BasicNotType() {
+			Assert.AreEqual(@"\P{Lu}", ImpressionToRegex.Convert(@"not-type		  Lu"));
+		}
 	}
 }

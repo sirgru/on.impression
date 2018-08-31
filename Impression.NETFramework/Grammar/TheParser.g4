@@ -18,9 +18,12 @@ set
 	| SET				# SetWithContent
 	| CHAR '..' CHAR	# RangeSet
 	| set '+' set		# CombinationSet
+	| CHAR_TYPE         # CharType
+	| NOT_CHAR_TYPE     # NotCharType
 	;
 
 not_set: NOT set # SetNegative;
+
 
 
 

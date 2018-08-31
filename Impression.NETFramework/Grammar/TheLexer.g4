@@ -20,10 +20,10 @@ NOT: 'not';
 RANGE_SEPARATOR: '..';
 RANGE_JOIN: '+';
 
-WS: (' ' | '\t' | '\f') -> channel(HIDDEN);
+CHAR_TYPE: 'type' ( ' ' | '\t')+ [a-zA-Z-]+;
+NOT_CHAR_TYPE: 'not-type' ( ' ' | '\t')+ [a-zA-Z-]+;
 
-CHAR_TYPE: 'type' [a-zA-Z-]+;
+WS: (' ' | '\t' | '\f' | '\r' | '\n') -> channel(HIDDEN);
 
 CHAR: .;
-
 
