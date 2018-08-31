@@ -1,1 +1,1 @@
-'abc' ' /*' /* comment */ ' /* */' ''
+not [abc] + a..Z + [d]

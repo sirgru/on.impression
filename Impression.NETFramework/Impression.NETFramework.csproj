@@ -55,6 +55,7 @@
       <DependentUpon>TheParser.g4</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Source\SemanticErrorException.cs" />
     <Compile Include="Source\SemanticErrorListener.cs" />
     <Compile Include="Source\Visitor.cs" />
   </ItemGroup>

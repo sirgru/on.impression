@@ -12,7 +12,12 @@ namespace ES.ON.Impression {
 			var context = parser.start();
 			var visitor = new Visitor();
 
-			return visitor.Visit(context);
+			try {
+				return visitor.Visit(context);
+			} catch(SemanticErrorException) {
+				System.Console.WriteLine(visitor.semanticErrorListener.lastError.message);
+				return null;
+			}
 		}
 	}
 }

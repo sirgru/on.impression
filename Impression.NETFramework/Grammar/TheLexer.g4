@@ -1,14 +1,27 @@
 lexer grammar TheLexer
 	;
 
-ESC_QUOTE:  '\'';
+QUOTE: '\'';
+
+ESCAPED_QUOTE: '\\\'';
+ESCAPED_DBL_BACKSLASH: '\\\\';
+ESCAPED_CLOSE_BRACKET: '\\]';
 
 EMPTY_LITERAL: '\'' '\'';
+LITERAL: '\'' (ESCAPED_QUOTE | ESCAPED_DBL_BACKSLASH | .)*? '\'';
 
-LITERAL: '\'' (ESCAPED_SEQ|.)*? '\'' ;
+EMPTY_SET: '[' ']';
+SET: '[' (ESCAPED_CLOSE_BRACKET | ESCAPED_DBL_BACKSLASH | .)*? ']';
 
-ESCAPED_SEQ: '\\\'' | '\\\\' ; // 2-char sequences \" and \\
+COMMENT: '/*' .*? '*/' -> skip;
 
-COMMENT : '/*' .*? '*/' -> skip ; 
+NOT: 'not';
 
-WS: (' '|'\t'|'\f') -> channel(HIDDEN);
+RANGE_SEPARATOR: '..';
+RANGE_JOIN: '+';
+
+WS: (' ' | '\t' | '\f') -> channel(HIDDEN);
+
+ANY: .;
+
+

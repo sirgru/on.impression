@@ -9,9 +9,9 @@ We don't disagree that searching for a pattern of text inside another pattern of
 
 **Regular expressions are hard to read.**
 
-The problem is the syntax for regular expressions mixes literals and special characters in complex and context dependant rules. Sometimes a character is a literal and sometimes it is special, but it is special only in certain contexts (for example `-` character is different in and out of class, and if it's first in class, but it could also be an exclusion). For this reason, the reader must parse the regular expression just like a computer would, keeping mental track of the translated elements to get the general meaning of the expression. Regex does not convey intent clearly because the concepts of a literal and a "keyword" are mixed inside the language. This manifests with a lot of escape characters that must be understood, and in some languages the backslash has to be doubly escaped leading to incredible visual clutter. Further, the terseness of the language is a problem - every "keyword" must be represented by a special set of symbols, which must be "un-intuitively translated". How many programmers can immediately tell what these mean: `(?<= sub expression )`, `(?<v> sub expression)`? Most programmers don't work with text processing often enough and with enough volume to have enough experience to mentally parse the regex quickly. 
+The problem is the syntax for regular expressions mixes literals and special characters in complex and context dependant rules. Sometimes a character is a literal and sometimes it is special, but it is special only in certain contexts (for example `-` character is different in and out of class, and if it's first in class, but it could also be an exclusion). For this reason, the reader must mentally parse the regular expression just like a computer would, keeping mental track of the translated elements to get the general meaning of the expression. Regex does not convey intent clearly because the concepts of a literal and a "keyword" are mixed inside the language. This manifests with a lot of escape characters that must be understood, and in some languages the backslash has to be doubly escaped leading to incredible visual clutter. Further, the terseness of the language is a problem - every "keyword" must be represented by a special set of symbols, which must be "un-intuitively translated". How many programmers can immediately tell what these mean: `(?<= sub expression )`, `(?<v> sub expression)`? Most programmers don't work with text processing often enough and with enough volume to have enough experience to mentally parse the regex quickly. 
 
-Some programmers decorate their regex with detailed comments and this alleviates most of the problem, but most programmers don't. Comments should never be required for basic understanding of the program and this is a symptom of bad language design.
+Some programmers decorate their regex with detailed comments and this alleviates most of the problem, but most programmers don't. Comments should never be required for basic understanding of the program and this is a symptom of the obvious bad language design.
 
 Sometimes the regex is so complex that it is easier to write it from scratch than try to understand it and debug it. 
 
@@ -22,7 +22,7 @@ Sometimes the regex is so complex that it is easier to write it from scratch tha
 
 Some of the problem is the inherent complexity of working with text, other is accidental complexity arising from the idioms of the regex language. 
 
-Some of the accidental complexity is related to effective undebuggability of regex without the presence of specialized tools. 
+Some of the complexity is related to effective undebuggability of regex without the presence of specialized tools. 
 
 
 **It is easy to get out of hand with regular expressions**
@@ -33,7 +33,7 @@ One class of programmers will simply overuse regex. "When you have a hammer, eve
 
 Most users practically copy the regex from some of the regex sharing sites if they are needing it for a well-known purpose. This subtly negates the purpose of existence of the regex language - they might have used a library and it would have been quicker (no regex compile) and it would have been standardized, easier to test and debug. 
 
-When writing a regex from scratch, the workflow usually includes an external tool, such a RegexBuddy, or one of the numerous online helper tools. The nature of the thing is that a regex is assembled part by part, and the final solution is usually much longer than the initial solution and much less intuitive. It is easy to create a "monster regex".
+The nature of the thing is that a regex is assembled part by part, and the final solution is usually much longer than the initial solution and much less intuitive. It is easy to create a "monster regex".
 
 
 **Regular expressions are not standardized**
@@ -45,26 +45,32 @@ In practice, the problem is that a regex from one language cannot be used as-is 
 
 **Tools are band-aids, not solutions**
 
-Commercial and free tools can generate regex much easier than writing the syntax, but there are problems: the created regex exhibits all the negative characteristics when maintenance is needed. 
+When writing a regex from scratch, the workflow usually includes an external tool, paid or free, or one of the numerous online helper tools. Tools can generate regex much easier than writing the syntax, but there are problems: the created regex exhibits all the negative characteristics when maintenance is needed. It quickly becomes a piece of text dependant on that external tool for change.
 
 
 ## Solution
 
-There exists a large amount of knowledge and techniques around implementing regular expressions efficiently. The experience and skills around working with regular grammar are also significant parts of a programmer's skillset. We have no intention of throwing those away, instead we feature the good parts and work on the missing parts. The solution is a better formulated language that is trans-compiled to a well-known regular expressions language. 
+There exists a large amount of knowledge and techniques around implementing regular expressions efficiently. The experience and skills around working with regular expression elements are also significant parts of a programmer's skillset. We have no intention of throwing those away, instead we feature the good parts and work on the missing parts. The solution is a better formulated language that is trans-compiled to a well-known regular expressions language. 
 
 
 ### Literals & Comments:
 
-| Imp:         | Regex:        |
-| ------------ | ------------- |
-| 'abc'        | abc           |
-| ------------ | ------------- |
-| /* comment*/ | (?# comment ) |
+Single quotes are used to delimit string literals. This allows us to embed the imp expression inside a verbatim literal in most languages (like C#) and don't have to do escaping. If the single quote must be used as data, it must be escaped, e.g. `'q\'q'`. If the string literal must contain a backslash, it must be escaped with another backslash.
+
+Comments are allowed outside literals and classes.
+
+Empty literals ('') aren't allowed.
+
+| Imp:          | Regex:        |
+| ------------- | ------------- |
+| 'abc'         | abc           |
+| ------------  | ------------- |
+| /* comment */ | (?# comment ) |
 
 
 ### Escapes:
 
-Escapes appear inside literals.
+Escapes appear inside literals and sets.
 
 | Imp:   | Regex: | Explanation:                                                                                |
 | ------ | ------ | ------------------------------------------------------------------------------------------- |
@@ -81,34 +87,29 @@ Escapes appear inside literals.
 | \cX    | \cX    | Matches the ASCII control char specified by X or x, the letter of the control character.    |
 | \unnnn | \unnnn | Matches a Unicode character by using hexadecimal representation (exactly four digits).      |
 
-If the string literal must contain a backslash, it must be escaped with another backslash (\u005C).
 
-<!-- 
-Convert all language constructs to hex. \xnn
-. $ ^ { [ ( | ) * + ? \ -
- -->
 
-### Character Classes:
+### Character Groups (classes):
 
-Single quotes are used to delimit string literals. This allows us to embed the imp expression inside a verbatim literal in C# and have to do no escaping. If the single quote must be used as data, it must be escaped, e.g. `'q\'q'`.
+Character groups (classes) are denoted with `[]`. If a closing bracket must be used as part of data in the class, it must be escaped, e.g. `[(){}[\]]`. If the set must contain a backslash, it must be escaped with another backslash. 
 
-Classes are denoted with `[]`. If a closing bracket must be used as part of data in the class, it must be escaped, e.g. `[(){}[\]]`
+Empty sets ([]) aren't allowed.
 
-| Imp:                | Regex:         | Explanation:                                                            |
-| ------------------- | -------------- | ----------------------------------------------------------------------- |
-| [cg]                | [cg]           | Matches any single character in character group (class) cg              |
-| not [cg]            | [^cg]          | Negation: Matches any single character that is not in class.            |
-| a..z + A..Z + [123] | [a-zA-Z123]    | Example of ranges.                                                      |
-| type IsCyrillic     | \p{IsCyrillic} | Matches any 1 character in the Unicode general category or named block. |
-| not type Lu         | \P{Lu}         | Not \p                                                                  |
-| w                   | \w             | Matches any word character.                                             |
-| not w               | \W             | Not \w                                                                  |
-| ws                  | \s             | Matches any white-space character.                                      |
-| not ws              | \S             | Not \s                                                                  |
-| d                   | \d             | Matches any decimal digit.                                              |
-| not d               | \D             | Not \d                                                                  |
+| Imp:                | Regex:         | Explanation:                                                                |
+| ------------------- | -------------- | --------------------------------------------------------------------------- |
+| [cg]                | [cg]           | Matches any single character in character group (class) cg                  |
+| not [cg]            | [^cg]          | Negation: Matches any single character that is not in class.                |
+| a..z + A..Z + [123] | [a-zA-Z123]    | Example of ranges.                                                          |
+| type IsCyrillic     | \p{IsCyrillic} | Matches any 1 character in the Unicode general category or named block. [1] |
+| not-type Lu         | \P{Lu}         | Not \p                                                                      |
+| w                   | \w             | Matches any word character.                                                 |
+| not w               | \W             | Not \w                                                                      |
+| ws                  | \s             | Matches any white-space character.                                          |
+| not ws              | \S             | Not \s                                                                      |
+| d                   | \d             | Matches any decimal digit.                                                  |
+| not d               | \D             | Not \d                                                                      |
 
-For multiple Types use type (T1, T2)
+[1] For multiple Types use type (T1, T2)
 
 <!-- 
 https://docs.microsoft.com/en-us/dotnet/standard/base-types/character-classes-in-regular-expressions#SupportedNamedBlocks
@@ -117,16 +118,16 @@ https://docs.microsoft.com/en-us/dotnet/standard/base-types/character-classes-in
 
 ### Anchors:
 
-| Imp:        | Regex:  | Explanation:                                                                  |
-| ----------- | ------- | ----------------------------------------------------------------------------- |
-| start       | ^       | Start of Line                                                                 |
-| end         | $       | End of Line                                                                   |
-| head        | \A      | Start of String                                                               |
-| tail-not-ws | (?=\s)$ | Match at the end of the string before trailing whitespace.                    |
-| tail        | \z      | The match must occur at the end of the string, including trailing whitespace. |
-| last-match  | \G      | The match must occur at the point where the previous match ended.             |
-| wb          | \b      | The match must occur on word boundary.                                        |
-| not wb      | \B      | The match must not occur on a \b boundary.                                    |
+| Imp:        | Regex:    | Explanation:                                                                  |
+| ----------- | --------- | ----------------------------------------------------------------------------- |
+| start       | ^         | Start of Line                                                                 |
+| end         | $         | End of Line                                                                   |
+| head        | \A        | Start of String                                                               |
+| tail-not-ws | (?=\s*\z) | Match at the end of the string before trailing whitespace.                    |
+| tail        | \z        | The match must occur at the end of the string, including trailing whitespace. |
+| last-match  | \G        | The match must occur at the point where the previous match ended.             |
+| wb          | \b        | The match must occur on word boundary.                                        |
+| not wb      | \B        | The match must not occur on a \b boundary.                                    |
 
 
 ### Grouping:
