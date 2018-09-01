@@ -22,7 +22,9 @@ expression
     | expression RENAME     # Renaming
     | grouping              # n__Grouping
     | expression QUANTIFIER # Quantifier
-    | expression '|' expression # Alternation
+    | expression '|' expression                         # Alternation
+    | IF expression THEN expression ELSE expression     # ConditionExpression
+    | IF VAR_USE THEN expression ELSE expression        # ConditionVariable
 	;
 
 paren_expression: '(' + expression + ')' #ParenExpr;
@@ -78,3 +80,4 @@ grouping
 	| NOT_AFTER expression  # NotAfter
 	| ATOMIC expression     # Atomic
 	;
+

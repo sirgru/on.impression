@@ -179,11 +179,11 @@ Quantifiers thus use the same syntax for greedy and non-greedy matching.
 
 ### Alternation:
 
-| Imp:                           | Regex:                        | Explanation:         |
-| ------------------------------ | ----------------------------- | -------------------- |
-| `'th'('e'|'is'|'at')`          | `th(e|is|at)`                 | Any one alternative. |
-| if expression then yes else no | `(?( expression ) yes | no )` | [1]                  |
-| if $name then yes else no      | `(?(<name>) yes | no )`       | [1]                  |
+| Imp:                             | Regex:                      | Explanation:         |
+| -------------------------------- | --------------------------- | -------------------- |
+| `'th'('e'|'is'|'at')`            | `th(e|is|at)`               | Any one alternative. |
+| `if expression then yes else no` | `(?(expression) yes | no )` | [1]                  |
+| `if $name then yes else no`      | `(?(name) yes | no )`       | [1]                  |
 
 [1] Matches yes if the regular expression pattern or name designated by expression matches; otherwise, matches the optional no part. expression is interpreted as a zero-width assertion.
 

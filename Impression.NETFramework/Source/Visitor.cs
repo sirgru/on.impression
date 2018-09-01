@@ -259,5 +259,13 @@ namespace ES.ON.Impression {
 
 			return left + "|" + right;
 		}
+
+		public override string VisitConditionExpression([NotNull] TheParser.ConditionExpressionContext context) {
+			return "(?(" + Visit(context.expression(0)) + ")" + Visit(context.expression(1)) + "|" + Visit(context.expression(2)) + ")";
+		}
+		public override string VisitConditionVariable([NotNull] TheParser.ConditionVariableContext context) {
+			var varName = context.VAR_USE().GetText().Substring(1);
+			return "(?(" + varName + ")" + Visit(context.expression(0)) + "|" + Visit(context.expression(1)) + ")";
+		}
 	}
 }

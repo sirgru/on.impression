@@ -133,5 +133,14 @@ namespace Impression.Test {
 		public void AlternationTest() {
 			Assert.AreEqual(@"th(e|is|at)", ImpressionToRegex.Convert(@"'th'('e'|'is'|'at')"));
 		}
+
+		[Test]
+		public void ConditionTest1() {
+			Assert.AreEqual(@"(?(a)ab|bc)", ImpressionToRegex.Convert(@"if 'a' then 'ab' else 'bc'"));
+		}
+		[Test]
+		public void ConditionTest2() {
+			Assert.AreEqual(@"(?(var)ab|bc)", ImpressionToRegex.Convert(@"if $var then 'ab' else 'bc'"));
+		}
 	}
 }

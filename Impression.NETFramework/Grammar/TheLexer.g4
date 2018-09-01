@@ -22,8 +22,9 @@ RANGE_SEPARATOR: '..';
 RANGE_JOIN: '+';
 RANGE_SUBTRACT: '-';
 
-CHAR_TYPE: 'type' ( ' ' | '\t')+ [a-zA-Z-]+;
-NOT_CHAR_TYPE: 'not-type' ( ' ' | '\t')+ [a-zA-Z-]+;
+fragment SEP: ( ' ' | '\t')+;
+CHAR_TYPE: 'type' SEP [a-zA-Z-]+;
+NOT_CHAR_TYPE: 'not-type' SEP [a-zA-Z-]+;
 
 C_WORD: 'w';
 C_WHITE_SPACE: 'ws';
@@ -38,7 +39,6 @@ TAIL: 'tail';
 LAST_MATCH: 'last-match';
 
 fragment ID: [a-zA-Z_] [a-zA-Z0-9_]*;
-fragment SEP: ( ' ' | '\t')+;
 NAME: 'as' SEP ID;
 RENAME: 'as' SEP ID ':' ID;
 
@@ -60,7 +60,13 @@ QUANTIFIER
 	| 'x' OPT_SEP (DIGIT)? OPT_SEP '..' OPT_SEP DIGIT
 	;
 
+IF: 'if';
+THEN: 'then';
+ELSE: 'else';
+VAR_USE: '$' ID;
+
 WS: (' ' | '\t' | '\f' | '\r' | '\n') -> channel(HIDDEN);
 
 CHAR: .;
+
 
