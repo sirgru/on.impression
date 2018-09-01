@@ -21,11 +21,18 @@ expression
 	| expression NAME       # Naming
     | expression RENAME     # Renaming
     | grouping              # n__Grouping
-    | expression QUANTIFIER # Quantifier
+    | expression QUANTIFIER     # Quantifier
+    | expression ANY_GREEDY     # AnyGreedy
+    | expression ANY            # Any
+    | expression ALL_GREEDY     # AllGreedy
+    | expression ALL            # All
+    | expression MAYBE          # Maybe
     | expression '|' expression                         # Alternation
     | IF expression THEN expression ELSE expression     # ConditionExpression
     | IF VAR_USE THEN expression ELSE expression        # ConditionVariable
-	;
+    | additions             # n__Additions
+    | subst_special         # n__SubstSpecial
+    ;
 
 paren_expression: '(' + expression + ')' #ParenExpr;
 
@@ -50,17 +57,17 @@ type: CHAR_TYPE         # CharType
     ;
 
 shorts
-	: 'w'  # Word
-	| 'ws'  # WhiteSpace
-	| 'd'   # Digit
-	| 'wb'  # WordBoundary
+	: C_WORD         # WordChar
+	| C_WHITE_SPACE  # WhiteSpace
+	| C_DIGIT        # Digit
+	| WORD_BOUNDARY  # WordBoundary
 	;
 
 not_short
-	: NOT 'w'   # NotWord
-	| NOT 'ws'  # NotWhiteSpace
-	| NOT 'd'   # NotDigit
-	| NOT 'wb'  # NotWordBoundary
+	: NOT C_WORD         # NotWord
+	| NOT C_WHITE_SPACE  # NotWhiteSpace
+	| NOT C_DIGIT        # NotDigit
+	| NOT WORD_BOUNDARY  # NotWordBoundary
 	;
 
 anchors
@@ -81,3 +88,21 @@ grouping
 	| ATOMIC expression     # Atomic
 	;
 
+additions
+	: NL            # NewLine
+	| WORD          # Word
+	| INT           # Int
+	| WHITESPACE    # Whitespace
+	| C             # C
+	| DOT           # Dot
+	| BEGIN_WORD    # BeginWord
+	| END_WORD      # EndWord
+	;
+
+subst_special
+	: NAMED_SUBST   # NamedSubst
+    | MATCH         # MatchKeyword
+    | BEFORE_MATCH  # BeforeMatchKeyword
+    | AFTER_MATCH   # AfterMatchKeyword
+    | INPUT         # InputKeyword
+	;

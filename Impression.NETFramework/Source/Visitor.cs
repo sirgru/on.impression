@@ -125,7 +125,7 @@ namespace ES.ON.Impression {
 			return first.Substring(0, first.Length - 1) + "-" + second + "]";
 		}
 
-		public override string VisitWord([NotNull] TheParser.WordContext context) {
+		public override string VisitWordChar([NotNull] TheParser.WordCharContext context) {
 			return @"\w";
 		}
 		public override string VisitWhiteSpace([NotNull] TheParser.WhiteSpaceContext context) {
@@ -266,6 +266,69 @@ namespace ES.ON.Impression {
 		public override string VisitConditionVariable([NotNull] TheParser.ConditionVariableContext context) {
 			var varName = context.VAR_USE().GetText().Substring(1);
 			return "(?(" + varName + ")" + Visit(context.expression(0)) + "|" + Visit(context.expression(1)) + ")";
+		}
+
+		public override string VisitNewLine([NotNull] TheParser.NewLineContext context) {
+			return @"\r?\n";
+		}
+		public override string VisitWord([NotNull] TheParser.WordContext context) {
+			return @"\w+";
+
+		}
+		public override string VisitInt([NotNull] TheParser.IntContext context) {
+			return @"\d+";
+
+		}
+		public override string VisitWhitespace([NotNull] TheParser.WhitespaceContext context) {
+			return @"\s+";
+
+		}
+		public override string VisitC([NotNull] TheParser.CContext context) {
+			return @"[^\r\n]";
+
+		}
+		public override string VisitDot([NotNull] TheParser.DotContext context) {
+			return @".";
+
+		}
+		public override string VisitBeginWord([NotNull] TheParser.BeginWordContext context) {
+			return @"((?<=\W)(?=\w)|^(?=\w))";
+
+		}
+		public override string VisitEndWord([NotNull] TheParser.EndWordContext context) {
+			return @"((?<=\w)(?=\W)|(?=\w)$)";
+		}
+
+		public override string VisitAnyGreedy([NotNull] TheParser.AnyGreedyContext context) {
+			return @"(" + Visit(context.expression()) + ")*";
+		}
+		public override string VisitAny([NotNull] TheParser.AnyContext context) {
+			return @"(" + Visit(context.expression()) + ")*?";
+		}
+		public override string VisitAllGreedy([NotNull] TheParser.AllGreedyContext context) {
+			return @"(" + Visit(context.expression()) + ")+";
+		}
+		public override string VisitAll([NotNull] TheParser.AllContext context) {
+			return @"(" + Visit(context.expression()) + ")+?";
+		}
+		public override string VisitMaybe([NotNull] TheParser.MaybeContext context) {
+			return @"(" + Visit(context.expression()) + ")?";
+		}
+
+		public override string VisitNamedSubst([NotNull] TheParser.NamedSubstContext context) {
+			return context.GetText();
+		}
+		public override string VisitMatchKeyword([NotNull] TheParser.MatchKeywordContext context) {
+			return @"$&";
+		}
+		public override string VisitBeforeMatchKeyword([NotNull] TheParser.BeforeMatchKeywordContext context) {
+			return @"$`";
+		}
+		public override string VisitAfterMatchKeyword([NotNull] TheParser.AfterMatchKeywordContext context) {
+			return @"$'";
+		}
+		public override string VisitInputKeyword([NotNull] TheParser.InputKeywordContext context) {
+			return @"$_";
 		}
 	}
 }

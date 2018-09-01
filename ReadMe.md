@@ -192,7 +192,7 @@ Quantifiers thus use the same syntax for greedy and non-greedy matching.
 
 | Imp:         | Regex:  | Explanation:                                                   |
 | ------------ | ------- | -------------------------------------------------------------- |
-| $name        | ${name} | Named substitution                                             |
+| ${name}      | ${name} | Named substitution                                             |
 | match        | $&      | Substitutes a copy of the whole match.                         |
 | before-match | $`      | Substitutes all the text of the input string before the match. |
 | after-match  | $'      | Substitutes all the text of the input string after the match.  |
@@ -203,37 +203,45 @@ Quantifiers thus use the same syntax for greedy and non-greedy matching.
 
 We always use m, n and s options and never use x option in the generated Regex. We explicitly specify i option. 
 
-The types of expressions that associate to the left (quantification and naming) have higher precedence than regular rules, for example `'ab' | 'cd' x 3` evaluates as `'ab' | ('cd' x 3)`.
+| Imp:       | Regex:                    | Explanation:                                |
+| ---------- | ------------------------- | ------------------------------------------- |
+| nl         | \r?\n                     | OS-independent newline.                     |
+| word       | \w+                       | Word                                        |
+| int        | \d+                       | Integral number                             |
+| whitespace | \s+                       | White space                                 |
+| bw         | `((?<=\W)(?=\w)|^(?=\w))` | Begin word                                  |
+| ew         | `((?<=\w)(?=\W)|(?=\w)$)` | End word                                    |
+| c          | `[^\r\n]`                 | Match exactly 1 character, except \r or \n. |
+| .          | `.` singleline            | Match exactly 1 character.                  |
 
-| Imp:            | Regex:           | Explanation:                                |
-| --------------- | ---------------- | ------------------------------------------- |
-| nl              | \r?\n            | OS-independent newline.                     |
-| word            | \w+              | Word                                        |
-| int             | \d+              | Integral number                             |
-| whitespace      | \s+              | White space                                 |
-| c               | `[^\r\n]`        | Match exactly 1 character, except \r or \n. |
-| .               | `.` singleline   | Match exactly 1 character.                  |
-| c any-greedy    | `[^\r\n]*`       |                                             |
-| c any           | `[^\r\n]*?`      |                                             |
-| . any-greedy    | `.*` singleline  |                                             |
-| . any           | `.*?` singleline |                                             |
-| c all-greedy    | `[^\r\n]+`       |                                             |
-| c all           | `[^\r\n]+?`      |                                             |
-| . all-greedy    | `.+` singleline  |                                             |
-| . all           | `.+?` singleline |                                             |
-| c maybe         | `[^\r\n]?`       |                                             |
-| . maybe         | `.?`             |                                             |
-| expr any-greedy | `expr*`          |                                             |
-| expr any        | `expr*?`         |                                             |
-| expr all-greedy | `expr+`          |                                             |
-| expr all        | `expr+?`         |                                             |
-| expr maybe      | `expr?`          |                                             |
-| bw              | `\W\w`           | Begin word                                  |
-| ew              | `\w\W`           | End word                                    |
+| Imp:            | Regex:     | Explanation: |
+| --------------- | ---------- | ------------ |
+| expr any-greedy | `(expr)*`  |              |
+| expr any        | `(expr)*?` |              |
+| expr all-greedy | `(expr)+`  |              |
+| expr all        | `(expr)+?` |              |
+| expr maybe      | `(expr)?`  |              |
+
+Which Means:
+
+| Imp:         | Regex:             | Explanation: |
+| ------------ | ------------------ | ------------ |
+| c any-greedy | `([^\r\n])*`       |              |
+| c any        | `([^\r\n])*?`      |              |
+| . any-greedy | `(.)*` singleline  |              |
+| . any        | `(.)*?` singleline |              |
+| c all-greedy | `([^\r\n])+`       |              |
+| c all        | `([^\r\n])+?`      |              |
+| . all-greedy | `(.)+` singleline  |              |
+| . all        | `(.)+?` singleline |              |
+| c maybe      | `([^\r\n])?`       |              |
+| . maybe      | `(.)?`             |              |
+
+> Mnemonics: the shorthand keywords (w, wb..) represent 1 or 0 length selections. Complete words (word, whitespace) represent a complete selection counterpart, a series of characters.
 
 
 ### Grammar:
 
-Ax expression consists of a series of sub-expressions. Subexpressions may be enclosed in parenthesis, which do not influence capturing. Subexpressions may be prefixed with a grouping statement, or a case-insensitive modifier, or may be suffixed with a quantifier.
+Ax expression consists of a series of sub-expressions. Subexpressions may be enclosed in parenthesis, which do not influence capturing. Subexpressions may be prefixed with a positioning keyword, or a case-insensitive modifier keyword, or may be suffixed with a quantifier. The types of expressions that associate right to left (quantification and naming) have higher precedence than regular rules, for example `'ab' | 'cd' x 1..3` evaluates as `'ab' | ('cd' x 1..3)`.
 
 

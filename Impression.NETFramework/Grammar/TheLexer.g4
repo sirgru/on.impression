@@ -65,6 +65,27 @@ THEN: 'then';
 ELSE: 'else';
 VAR_USE: '$' ID;
 
+NL: 'nl';
+WORD: 'word';
+INT: 'int';
+WHITESPACE: 'whitespace';
+C: 'c';
+DOT: '.';
+BEGIN_WORD: 'bw';
+END_WORD: 'ew';
+
+ANY_GREEDY: 'any-greedy';
+ANY: 'any';
+ALL_GREEDY: 'all-greedy';
+ALL: 'all';
+MAYBE: 'maybe';
+
+NAMED_SUBST: '${' + ID + '}';
+MATCH: 'match';
+BEFORE_MATCH: 'before-match';
+AFTER_MATCH: 'after-match';
+INPUT: 'input';
+
 WS: (' ' | '\t' | '\f' | '\r' | '\n') -> channel(HIDDEN);
 
 CHAR: .;

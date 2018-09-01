@@ -142,5 +142,35 @@ namespace Impression.Test {
 		public void ConditionTest2() {
 			Assert.AreEqual(@"(?(var)ab|bc)", ImpressionToRegex.Convert(@"if $var then 'ab' else 'bc'"));
 		}
+
+		[Test]
+		public void Additions1Tests() {
+			Assert.AreEqual(@"\r?\n", ImpressionToRegex.Convert(@"nl"));
+			Assert.AreEqual(@"\w+", ImpressionToRegex.Convert(@"word"));
+			Assert.AreEqual(@"\d+", ImpressionToRegex.Convert(@"int"));
+			Assert.AreEqual(@"\s+", ImpressionToRegex.Convert(@"whitespace"));
+			Assert.AreEqual(@"[^\r\n]", ImpressionToRegex.Convert(@"c"));
+			Assert.AreEqual(@".", ImpressionToRegex.Convert(@"."));
+			Assert.AreEqual(@"((?<=\W)(?=\w)|^(?=\w))", ImpressionToRegex.Convert(@"bw"));
+			Assert.AreEqual(@"((?<=\w)(?=\W)|(?=\w)$)", ImpressionToRegex.Convert(@"ew"));
+		}
+
+		[Test]
+		public void Additions2Tests() {
+			Assert.AreEqual(@"(a)*", ImpressionToRegex.Convert(@"'a' any-greedy"));
+			Assert.AreEqual(@"(a)*?", ImpressionToRegex.Convert(@"'a' any"));
+			Assert.AreEqual(@"(a)+", ImpressionToRegex.Convert(@"'a' all-greedy"));
+			Assert.AreEqual(@"(a)+?", ImpressionToRegex.Convert(@"'a' all"));
+			Assert.AreEqual(@"(a)?", ImpressionToRegex.Convert(@"'a' maybe"));
+		}
+
+		[Test]
+		public void BasicSubstitutionKeywordText() {
+			Assert.AreEqual(@"${var}", ImpressionToRegex.Convert(@"${var}"));
+			Assert.AreEqual(@"$&", ImpressionToRegex.Convert(@"match"));
+			Assert.AreEqual(@"$`", ImpressionToRegex.Convert(@"before-match"));
+			Assert.AreEqual(@"$'", ImpressionToRegex.Convert(@"after-match"));
+			Assert.AreEqual(@"$_", ImpressionToRegex.Convert(@"input"));
+		}
 	}
 }
