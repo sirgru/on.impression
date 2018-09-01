@@ -7,6 +7,7 @@ namespace Impression.Test {
 		[TestCase(" 'abc")]
 		[TestCase("not not [abc]")]
 		[TestCase("a..")]
+		[TestCase("[ab] as ")]
 		public void InvalidSet(string input) {
 			var ps = new ParserState(input);
 			var context = ps.parser.start();

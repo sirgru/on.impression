@@ -58,6 +58,7 @@
     <Compile Include="Source\SemanticErrorException.cs" />
     <Compile Include="Source\SemanticErrorListener.cs" />
     <Compile Include="Source\Visitor.cs" />
+    <Compile Include="Source\VisitorHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Antlr4 Include="Grammar\TheParser.g4">

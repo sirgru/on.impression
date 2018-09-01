@@ -78,7 +78,7 @@ namespace ES.ON.Impression {
 		}
 
 		public override string VisitSetNegative([NotNull] TheParser.SetNegativeContext context) {
-			var positivePart = VisitSet(context.set());
+			var positivePart = Visit(context.set());
 
 			return "[^" + positivePart.Substring(1, positivePart.Length - 1);
 		}
@@ -99,38 +99,28 @@ namespace ES.ON.Impression {
 		}
 
 		public override string VisitCombinationSet([NotNull] TheParser.CombinationSetContext context) {
-			var first = VisitSet(context.set(0));
-			var second = VisitSet(context.set(1));
+			var first = Visit(context.set(0));
+			var second = Visit(context.set(1));
 			return first.Substring(0, first.Length - 1) + second.Substring(1, second.Length - 1);
 		}
-		
-		public override string VisitSet([NotNull] TheParser.SetContext context) {
-			switch(context) {
-				case TheParser.SetWithContentContext swcc: return VisitSetWithContent(swcc);
-				case TheParser.EmptySetContext esc: return VisitEmptySet(esc);
-				case TheParser.RangeSetContext rsc: return VisitRangeSet(rsc);
-				case TheParser.CombinationSetContext csc: return VisitCombinationSet(csc);
-				default: throw new System.InvalidOperationException("Unhandled set type.");
-			}
-		}
 
-		string GetContentFromCharType(ParserRuleContext context) {
+		string GetContentFromKeywordToken(ParserRuleContext context) {
 			var text = context.GetText();
 			var split = text.Split(' ', '\t');
 			return split[split.Length - 1];
 		}
 
 		public override string VisitCharType([NotNull] TheParser.CharTypeContext context) {
-			return @"\p{" + GetContentFromCharType(context) + "}";
+			return @"\p{" + GetContentFromKeywordToken(context) + "}";
 		}
 
 		public override string VisitNotCharType([NotNull] TheParser.NotCharTypeContext context) {
-			return @"\P{" + GetContentFromCharType(context) + "}";
+			return @"\P{" + GetContentFromKeywordToken(context) + "}";
 		}
 
 		public override string VisitSubtractionSet([NotNull] TheParser.SubtractionSetContext context) {
-			var first = VisitSet(context.set(0));
-			var second = VisitSet(context.set(1));
+			var first = Visit(context.set(0));
+			var second = Visit(context.set(1));
 
 			return first.Substring(0, first.Length - 1) + "-" + second + "]";
 		}
@@ -159,6 +149,115 @@ namespace ES.ON.Impression {
 		}
 		public override string VisitNotWordBoundary([NotNull] TheParser.NotWordBoundaryContext context) {
 			return @"\B";
+		}
+
+		public override string VisitStartLine([NotNull] TheParser.StartLineContext context) {
+			return @"^";
+		}
+		public override string VisitEndLine([NotNull] TheParser.EndLineContext context) {
+			return @"$";
+		}
+		public override string VisitHead([NotNull] TheParser.HeadContext context) {
+			return @"\A";
+		}
+		public override string VisitTailNotWS([NotNull] TheParser.TailNotWSContext context) {
+			return @"(?=\s*\z)";
+		}
+		public override string VisitTail([NotNull] TheParser.TailContext context) {
+			return @"\z";
+		}
+		public override string VisitLastMatch([NotNull] TheParser.LastMatchContext context) {
+			return @"\G";
+		}
+
+		public override string VisitParenExpr([NotNull] TheParser.ParenExprContext context) {
+			return Visit(context.expression(0));
+		}
+		public override string VisitNaming([NotNull] TheParser.NamingContext context) {
+			var content = GetContentFromKeywordToken(context);
+			return "(?<" + content + ">" + Visit(context.expression()) + ")";
+		}
+		public override string VisitRenaming([NotNull] TheParser.RenamingContext context) {
+			var content = GetContentFromKeywordToken(context);
+			var names = content.Split(':');
+			var name1 = names[0];
+			var name2 = names[1];
+			return "(?<" + name1 + "-" + name2 + ">" + Visit(context.expression()) + ")";
+		}
+
+		public override string VisitCaseInsensitive([NotNull] TheParser.CaseInsensitiveContext context) {
+			return "(?i:" + Visit(context.expression()) + ")";
+		}
+		public override string VisitBefore([NotNull] TheParser.BeforeContext context) {
+			return "(?=" + Visit(context.expression()) + ")";
+		}
+		public override string VisitNotBefore([NotNull] TheParser.NotBeforeContext context) {
+			return "(?!" + Visit(context.expression()) + ")";
+		}
+		public override string VisitAfter([NotNull] TheParser.AfterContext context) {
+			return "(?<=" + Visit(context.expression()) + ")";
+		}
+		public override string VisitNotAfter([NotNull] TheParser.NotAfterContext context) {
+			return "(?<!" + Visit(context.expression()) + ")";
+		}
+		public override string VisitAtomic([NotNull] TheParser.AtomicContext context) {
+			return "(?>" + Visit(context.expression()) + ")";
+		}
+
+		public override string VisitQuantifier([NotNull] TheParser.QuantifierContext context) {
+			var inputRaw = context.QUANTIFIER().GetText().ToCharArray();
+			var n = VisitorHelper.ExtractTwoNumbers(inputRaw);
+
+			if(n.number1 == 0 && n.number2 == int.MaxValue) {
+				return "(" + Visit(context.expression()) + ")*";
+			}
+			if(n.number1 == 1 && n.number2 == int.MaxValue) {
+				return "(" + Visit(context.expression()) + ")+";
+			}
+			if(n.number1 == 0 && n.number2 == 1) {
+				return "(" + Visit(context.expression()) + ")?";
+			}
+			if(n.number1 == n.number2 ) {
+				return "(" + Visit(context.expression()) + "){" + n.number1 + "}";
+			}
+			if(n.number2 == int.MaxValue) {
+				return "(" + Visit(context.expression()) + "){" + n.number1 + ",}";
+			}
+			if(n.number1 == int.MaxValue && n.number2 == 0) {
+				return "(" + Visit(context.expression()) + ")*?";
+			}
+			if(n.number1 == int.MaxValue && n.number2 == 1) {
+				return "(" + Visit(context.expression()) + ")+?";
+			}
+			if(n.number1 == 1 && n.number2 == 0) {
+				return "(" + Visit(context.expression()) + ")??";
+			}
+			if(n.number1 == int.MaxValue) {
+				return "(" + Visit(context.expression()) + "){" + n.number2 + ",}?";
+			}
+
+			if(n.number2 > n.number1) {
+				return "(" + Visit(context.expression()) + "){" + n.number1 + "," + n.number2 + "}";
+			} else {
+				return "(" + Visit(context.expression()) + "){" + n.number2 + "," + n.number1 + "}?";
+			}
+		}
+
+		public override string VisitAlternation([NotNull] TheParser.AlternationContext context) {
+			return "(" + VisitSubAlternation(context) + ")";
+		}
+		string VisitSubAlternation(TheParser.AlternationContext context) {
+			var exprLeft = context.expression(0);
+			string left;
+			if(exprLeft is TheParser.AlternationContext el) left = VisitSubAlternation(el);
+			else left = Visit(exprLeft);
+
+			var exprRight = context.expression(1);
+			string right;
+			if(exprRight is TheParser.AlternationContext er) right = VisitSubAlternation(er);
+			else right = Visit(exprRight);
+
+			return left + "|" + right;
 		}
 	}
 }

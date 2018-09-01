@@ -133,39 +133,41 @@ https://docs.microsoft.com/en-us/dotnet/standard/base-types/character-classes-in
 
 ### Grouping:
 
-| Imp:                      | Regex:                   | Explanation:                                                           |
-| ------------------------- | ------------------------ | ---------------------------------------------------------------------- |
-| -                         | ( subexp )               | Captures the matched subexp and assigns it a one-based ordinal number. |
-| subexpr as name           | (?< name > subexp )      | Captures the matched subexp into a named group.                        |
-| subexpr as name2 to name1 | (?<name1-name2> subexpr) | Defines a balancing group definition.                                  |
-| (subexpr)                 | (?: subexpr )            | Defines a noncapturing  group.                                         |
-| i subexpr                 | (?i: subexpr )           | Applies or disables case invariance within subexpression.              |
-| before subexpr            | (?= subexpr )            | Zero-width positive lookahead.                                         |
-| not-before subexpr        | (?! subexpr )            | Zero-width negative lookahead.                                         |
-| after subexpr             | (?<= subexpr )           | Zero-width positive lookbehind.                                        |
-| not-after subexpr         | (?<! subexpression )     | Zero-width negative lookbehind.                                        |
-| atomic subexpr            | (?> subexpr )            | Atomic (non-backtracking, "greedy") subexpr.                           |
+Variables can contain letter, numbers and underscore, but cannot begin with a number.
+
+| Imp:                   | Regex:                   | Explanation:                                                           |
+| ---------------------- | ------------------------ | ---------------------------------------------------------------------- |
+| -                      | ( subexp )               | Captures the matched subexp and assigns it a one-based ordinal number. |
+| subexpr as name        | (?< name > subexp )      | Captures the matched subexp into a named group.                        |
+| subexpr as name1:name2 | (?<name1-name2> subexpr) | Defines a balancing group definition.                                  |
+| (subexpr)              | (?: subexpr )            | Defines a noncapturing  group.                                         |
+| i subexpr              | (?i: subexpr )           | Applies or disables case invariance within subexpression.              |
+| before subexpr         | (?= subexpr )            | Zero-width positive lookahead.                                         |
+| not-before subexpr     | (?! subexpr )            | Zero-width negative lookahead.                                         |
+| after subexpr          | (?<= subexpr )           | Zero-width positive lookbehind.                                        |
+| not-after subexpr      | (?<! subexpression )     | Zero-width negative lookbehind.                                        |
+| atomic subexpr         | (?> subexpr )            | Atomic (non-backtracking, "greedy") subexpr.                           |
 
 
 ### Quantifiers:
 
-Quantifiers are specified in range syntax (closed and open ranges), with preferred number of matches second. If the preferred number of matches cannot be satisfied, it will try up to the first number in range as number of matches.
+Quantifiers are specified in range syntax (closed and open ranges), with preferred number of matches second. If the preferred number of matches cannot be satisfied, it will try until and including the first number in range.
 
 Quantifiers thus use the same syntax for greedy and non-greedy matching.
 
-| Imp:   | Regex:     | Explanation:                                                                              |
-| ------ | ---------- | ----------------------------------------------------------------------------------------- |
-| x 0..  | *          | Matches the previous element zero or more times.                                          |
-| x 1..  | +          | Matches the previous element one or more times.                                           |
-| x 0..1 | ?          | Matches the previous element zero or one time.                                            |
-| x n    | { n }      | Matches the previous element exactly n times.                                             |
-| x n..  | { n ,}     | Matches the previous element at least n times.                                            |
-| x n..m | { n , m }  | Matches the previous element at least n times, but no more than m times. (m > n)          |
-| x ..0  | *?         | Matches the previous element zero or more times, but as few times as possible.            |
-| x ..1  | +?         | Matches the previous element one or more times, but as few times as possible.             |
-| x 1..0 | ??         | Matches the previous element zero or one time, but as few times as possible.              |
-| x ..n  | { n ,}?    | Matches the previous element at least n times, but as few times as possible.              |
-| x m..n | { n , m }? | Matches the previous element between n and m times, but as few times as possible. (m > n) |
+| Imp:           | Regex:     | Explanation:                                                                      |
+| -------------- | ---------- | --------------------------------------------------------------------------------- |
+| x 0..          | *          | Matches the previous element zero or more times.                                  |
+| x 1..          | +          | Matches the previous element one or more times.                                   |
+| x 0..1         | ?          | Matches the previous element zero or one time.                                    |
+| x n            | { n }      | Matches the previous element exactly n times.                                     |
+| x n..          | { n ,}     | Matches the previous element at least n times.                                    |
+| x n..m (m > n) | { n , m }  | Matches the previous element at least n times, but no more than m times.          |
+| x ..0          | *?         | Matches the previous element zero or more times, but as few times as possible.    |
+| x ..1          | +?         | Matches the previous element one or more times, but as few times as possible.     |
+| x 1..0         | ??         | Matches the previous element zero or one time, but as few times as possible.      |
+| x ..n          | { n ,}?    | Matches the previous element at least n times, but as few times as possible.      |
+| x n..m (m < n) | { n , m }? | Matches the previous element between n and m times, but as few times as possible. |
 
 
 ### Backreferences:
@@ -199,7 +201,9 @@ Quantifiers thus use the same syntax for greedy and non-greedy matching.
 
 ### Additions:
 
-We always use m, n and s options and never use x option. We explicitly specify i option. 
+We always use m, n and s options and never use x option in the generated Regex. We explicitly specify i option. 
+
+The types of expressions that associate to the left (quantification and naming) have higher precedence than regular rules, for example `'ab' | 'cd' x 3` evaluates as `'ab' | ('cd' x 3)`.
 
 | Imp:            | Regex:           | Explanation:                                |
 | --------------- | ---------------- | ------------------------------------------- |

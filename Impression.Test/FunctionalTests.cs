@@ -73,5 +73,65 @@ namespace Impression.Test {
 		public void NotShortsTests() {
 			Assert.AreEqual(@"\W\S\D\B", ImpressionToRegex.Convert(@"not w not ws not d not wb"));
 		}
+
+		[Test]
+		public void AnchorsTests() {
+			Assert.AreEqual(@"^$\A(?=\s*\z)\z\G", ImpressionToRegex.Convert(@"start end head tail-not-ws tail last-match"));
+		}
+
+		[Test]
+		public void BasicParenExpr() {
+			Assert.AreEqual(@"[a-z]", ImpressionToRegex.Convert(@"(a..z)"));
+		}
+
+		[Test]
+		public void BasicNaming() {
+			Assert.AreEqual(@"(?<var>[a-z])", ImpressionToRegex.Convert(@"a..z as var"));
+		}
+
+		[Test]
+		public void BasicParenNaming() {
+			Assert.AreEqual(@"(?<var>[a-z])", ImpressionToRegex.Convert(@"(a..z) as var"));
+		}
+
+		[Test]
+		public void BasicReNaming() {
+			Assert.AreEqual(@"(?<var1-var2>[a-z])", ImpressionToRegex.Convert(@"a..z as var1:var2"));
+		}
+
+		[Test]
+		public void BasicParenReNaming() {
+			Assert.AreEqual(@"(?<var1-var2>[a-z])", ImpressionToRegex.Convert(@"(a..z) as var1:var2"));
+		}
+
+		[Test]
+		public void BasicGrouping() {
+			Assert.AreEqual(@"(?i:a)", ImpressionToRegex.Convert(@"i 'a'"));
+			Assert.AreEqual(@"(?=a)", ImpressionToRegex.Convert(@"before 'a'"));
+			Assert.AreEqual(@"(?!a)", ImpressionToRegex.Convert(@"not-before 'a'"));
+			Assert.AreEqual(@"(?<=a)", ImpressionToRegex.Convert(@"after 'a'"));
+			Assert.AreEqual(@"(?<!a)", ImpressionToRegex.Convert(@"not-after 'a'"));
+			Assert.AreEqual(@"(?>a)", ImpressionToRegex.Convert(@"atomic 'a'"));
+		}
+
+		[Test]
+		public void BasicQuantifiers() {
+			Assert.AreEqual(@"(ab)*", ImpressionToRegex.Convert(@"'ab' x 0.."));
+			Assert.AreEqual(@"(ab)+", ImpressionToRegex.Convert(@"'ab' x 1.."));
+			Assert.AreEqual(@"(ab)?", ImpressionToRegex.Convert(@"'ab' x 0..1"));
+			Assert.AreEqual(@"(ab){3}", ImpressionToRegex.Convert(@"'ab' x 3"));
+			Assert.AreEqual(@"(ab){3,}", ImpressionToRegex.Convert(@"'ab' x 3.."));
+			Assert.AreEqual(@"(ab)*?", ImpressionToRegex.Convert(@"'ab' x ..0"));
+			Assert.AreEqual(@"(ab)+?", ImpressionToRegex.Convert(@"'ab' x ..1"));
+			Assert.AreEqual(@"(ab)??", ImpressionToRegex.Convert(@"'ab' x 1..0"));
+			Assert.AreEqual(@"(ab){3,}?", ImpressionToRegex.Convert(@"'ab' x ..3"));
+			Assert.AreEqual(@"(ab){3,5}", ImpressionToRegex.Convert(@"'ab' x 3..5"));
+			Assert.AreEqual(@"(ab){3,5}?", ImpressionToRegex.Convert(@"'ab' x 5..3"));
+		}
+
+		[Test]
+		public void AlternationTest() {
+			Assert.AreEqual(@"th(e|is|at)", ImpressionToRegex.Convert(@"'th'('e'|'is'|'at')"));
+		}
 	}
 }
