@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Impression.NETFramework", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Impression.Test", "Impression.Test\Impression.Test.csproj", "{CBE6C5F3-D6DE-402F-9EC6-971461F41952}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Impression.Console", "Impression.Console\Impression.Console.csproj", "{9383E98A-2D40-4DB5-A23D-3498F2A48423}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{CBE6C5F3-D6DE-402F-9EC6-971461F41952}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CBE6C5F3-D6DE-402F-9EC6-971461F41952}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CBE6C5F3-D6DE-402F-9EC6-971461F41952}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9383E98A-2D40-4DB5-A23D-3498F2A48423}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9383E98A-2D40-4DB5-A23D-3498F2A48423}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9383E98A-2D40-4DB5-A23D-3498F2A48423}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9383E98A-2D40-4DB5-A23D-3498F2A48423}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
