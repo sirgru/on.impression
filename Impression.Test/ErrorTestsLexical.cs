@@ -14,7 +14,7 @@ namespace Impression.Test {
 			var visitor = new Visitor();
 			visitor.TryVisit(context);
 
-			Assert.AreNotEqual(null, visitor.nonParsingErrorListener.lastError);
+			Assert.AreNotEqual(null, visitor.errorListener.lastError);
 		}
 	}
 }

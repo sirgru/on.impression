@@ -12,9 +12,9 @@ namespace Impression.Test {
 			var visitor = new Visitor();
 			visitor.TryVisit(context);
 
-			var error = visitor.nonParsingErrorListener.lastError;
-			Assert.AreEqual("''", error.text);
-			Assert.AreEqual(1, error.charPositionInLine);
+			var error = visitor.errorListener.lastError;
+			Assert.AreEqual("''", error.token.Text);
+			Assert.AreEqual(1, error.token.StartIndex);
 		}
 
 		[TestCase("  [] ", ExpectedResult = 2)]
@@ -25,9 +25,9 @@ namespace Impression.Test {
 			var visitor = new Visitor();
 			visitor.TryVisit(context);
 
-			var error = visitor.nonParsingErrorListener.lastError;
-			Assert.AreEqual("[]", error.text);
-			return error.charPositionInLine;
+			var error = visitor.errorListener.lastError;
+			Assert.AreEqual("[]", error.token.Text);
+			return error.token.StartIndex;
 		}
 	}
 }

@@ -45,7 +45,7 @@ namespace ES.ON.Impression.ConsoleApp {
 				if(full) Console.WriteLine(ImpressionToRegex.Convert(input));
 				else Console.WriteLine(ImpressionToRegex.ConvertNoOptions(input));
 			} catch (Exception ex) {
-				Console.WriteLine("Error Converting. Message: " + ex.Message);
+				Console.WriteLine(ex.Message);
 			}
 			return 0;
 		}

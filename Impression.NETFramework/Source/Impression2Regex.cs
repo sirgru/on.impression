@@ -1,7 +1,6 @@
 using Antlr4.Runtime;
 using Impression.NETFramework.Grammar;
 using System;
-using System.IO;
 
 namespace ES.ON.Impression {
 	public class ImpressionToRegex {
@@ -26,19 +25,16 @@ namespace ES.ON.Impression {
 			var commonTokenStream = new CommonTokenStream(lexer);
 			var parser = new TheParser(commonTokenStream);
 
-			// TODO: Parser error listening
-			//StringWriter writer = new StringWriter();
-			//var errorListener = new ParserErrorListener(writer);
-			//lexer.RemoveErrorListeners();
-			//parser.RemoveErrorListeners();
-			//parser.AddErrorListener(errorListener);
+			var errorListener = new ErrorListener();
+			lexer.RemoveErrorListeners();
+			parser.RemoveErrorListeners();
+			parser.AddErrorListener(errorListener);
 
 			var context = parser.expressionSeq();
-			var visitor = new Visitor();
+			var visitor = new Visitor(errorListener);
 			var result = visitor.TryVisit(context);
 
-			//if(errorListener.lastError != null) throw new InvalidOperationException("Parsing Error: " + errorListener.lastError.message);
-			if(visitor.nonParsingErrorListener.lastError != null) throw new InvalidOperationException("Semantic Error: " + visitor.nonParsingErrorListener.lastError.message);
+			if(visitor.errorListener.hadErrors) throw new InvalidOperationException(visitor.errorListener.PrintErrors());
 
 			return result;
 		}

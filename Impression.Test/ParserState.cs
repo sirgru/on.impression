@@ -1,4 +1,4 @@
-﻿using ES.ON.Impression;
+using ES.ON.Impression;
 using Impression.NETFramework.Grammar;
 using Antlr4.Runtime;
 using System.IO;
@@ -7,7 +7,7 @@ namespace Impression.Test {
 	struct ParserState {
 		public TheParser   parser;
 		public TheLexer    lexer;
-		public ParserErrorListener    errorListener;
+		public ErrorListener    errorListener;
 
 		public ParserState(string input) {
 			var inputStream = new AntlrInputStream(input);
@@ -16,7 +16,7 @@ namespace Impression.Test {
 			parser = new TheParser(commonTokenStream);
 
 			StringWriter writer = new StringWriter();
-			errorListener = new ParserErrorListener(writer);
+			errorListener = new ErrorListener();
 			lexer.RemoveErrorListeners();
 			parser.RemoveErrorListeners();
 			parser.AddErrorListener(errorListener);

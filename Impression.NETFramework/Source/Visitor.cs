@@ -2,11 +2,18 @@ using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using Impression.NETFramework.Grammar;
-using System.Text;
 
 namespace ES.ON.Impression {
 	public class Visitor : TheParserBaseVisitor<string> {
-		public NonParseErrorListener nonParsingErrorListener { get; private set; } = new NonParseErrorListener();
+		public ErrorListener errorListener { get; private set; }
+
+		public Visitor() {
+			errorListener = new ErrorListener();
+		}
+
+		public Visitor(ErrorListener errorListener) {
+			this.errorListener = errorListener;
+		}
 
 		public string TryVisit([NotNull] IParseTree tree) {
 			try {
@@ -58,13 +65,13 @@ namespace ES.ON.Impression {
 
 		public override string VisitEmptyLiteral([NotNull] TheParser.EmptyLiteralContext context) {
 			var token = context.EMPTY_LITERAL().Symbol;
-			nonParsingErrorListener.AddError(new NonParseErrorListener.ErrorData(token, "Empty literals aren't allowed.", true));
+			errorListener.AddSemanticError(token, "Empty literals aren't allowed.");
 			throw new SemanticErrorException();
 		}
 
 		public override string VisitEmptySet([NotNull] TheParser.EmptySetContext context) {
 			var token = context.EMPTY_SET().Symbol;
-			nonParsingErrorListener.AddError(new NonParseErrorListener.ErrorData(token, "Empty sets aren't allowed.", true));
+			errorListener.AddSemanticError(token, "Empty sets aren't allowed.");
 			throw new SemanticErrorException();
 		}
 
@@ -336,7 +343,7 @@ namespace ES.ON.Impression {
 
 		public override string VisitUnrecognizedCharacterSequence([NotNull] TheParser.UnrecognizedCharacterSequenceContext context) {
 			var token = context.GetToken(TheParser.NEVER, 0).Symbol;
-			nonParsingErrorListener.AddError(new NonParseErrorListener.ErrorData(token, "Unrecognized character sequence.", false));
+			errorListener.AddLexicalError(token, "Unrecognized character sequence.");
 			throw new LexerErrorException();
 		}
 

@@ -97,20 +97,20 @@ Elements in character classes are not translated (`w` literally means 'w'). Alte
 
 Empty sets ([]) aren't allowed.
 
-| Imp:                    | Regex:         | Explanation:                                                    |
-| ----------------------- | -------------- | --------------------------------------------------------------- |
-| [cg]                    | [cg]           | Matches any single character in character set (class) cg        |
-| not: [cg]               | [^cg]          | Negation: Matches any single character that is not in set.      |
-| [a..z] + [A..Z] + [123] | [a-zA-Z123]    | Example of 2 ranges combined with a set.                        |
-| [a..z] + [0..9] - [6]   | [a-z0-9-[6]]   | Character Class Subtraction. [1]                                |
-| type: IsCyrillic        | \p{IsCyrillic} | Matches any 1 character in the Unicode category or named block. |
-| not-type: Lu            | \P{Lu}         | Not \p                                                          |
-| w                       | \w             | Matches any character that can be part of a "word".             |
-| not: w                  | \W             | Not \w                                                          |
-| ws                      | \s             | Matches any white-space character.                              |
-| not: ws                 | \S             | Not \s                                                          |
-| d                       | \d             | Matches a digit.                                                |
-| not: d                  | \D             | Not \d                                                          |
+| Imp:                | Regex:         | Explanation:                                                    |
+| ------------------- | -------------- | --------------------------------------------------------------- |
+| [cg]                | [cg]           | Matches any single character in character set (class) cg        |
+| not: [cg]           | [^cg]          | Negation: Matches any single character that is not in set.      |
+| a..z + A..Z + [123] | [a-zA-Z123]    | Example of 2 ranges combined with a set.                        |
+| a..z + 0..9 - [6]   | [a-z0-9-[6]]   | Character Class Subtraction. [1]                                |
+| type: IsCyrillic    | \p{IsCyrillic} | Matches any 1 character in the Unicode category or named block. |
+| not-type: Lu        | \P{Lu}         | Not \p                                                          |
+| w                   | \w             | Matches any character that can be part of a "word".             |
+| not: w              | \W             | Not \w                                                          |
+| ws                  | \s             | Matches any white-space character.                              |
+| not: ws             | \S             | Not \s                                                          |
+| d                   | \d             | Matches a digit.                                                |
+| not: d              | \D             | Not \d                                                          |
 
 [1] Subtraction has higher priority than addition, thus any additions after the subtraction are treated as belonging to the subtraction.
 
@@ -251,4 +251,8 @@ Spaces, tabs and newlines have no meaning.
 
 A comma character can be used to arbitrarily separate elements in the expression, it will have no meaning and will be discarded like a space.
 
+
+### Authors:
+
+Grammar and implementation in C# created by Gojko Radonjić "Gru".
 
