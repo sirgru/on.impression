@@ -2,6 +2,7 @@ using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using Impression.NETFramework.Grammar;
+using System.Text;
 
 namespace ES.ON.Impression {
 	public class Visitor : TheParserBaseVisitor<string> {
@@ -105,18 +106,17 @@ namespace ES.ON.Impression {
 			return first.Substring(0, first.Length - 1) + second.Substring(1, second.Length - 1);
 		}
 
-		string GetContentFromKeywordToken(ParserRuleContext context) {
-			var text = context.GetText();
-			var split = text.Split(' ', '\t');
-			return split[split.Length - 1];
-		}
-
 		public override string VisitCharType([NotNull] TheParser.CharTypeContext context) {
-			return @"\p{" + GetContentFromKeywordToken(context) + "}";
+			return @"\p{" + GetContentFromCharType(context) + "}";
 		}
 
 		public override string VisitNotCharType([NotNull] TheParser.NotCharTypeContext context) {
-			return @"\P{" + GetContentFromKeywordToken(context) + "}";
+			return @"\P{" + GetContentFromCharType(context) + "}";
+		}
+		string GetContentFromCharType(ParserRuleContext context) {
+			var text = context.GetText();
+			var split = text.Split(' ', '\t', ':');
+			return split[split.Length - 1];
 		}
 
 		public override string VisitSubtractionSet([NotNull] TheParser.SubtractionSetContext context) {
@@ -175,15 +175,20 @@ namespace ES.ON.Impression {
 			return Visit(context.expressionSeq());
 		}
 		public override string VisitNaming([NotNull] TheParser.NamingContext context) {
-			var content = GetContentFromKeywordToken(context);
+			var content = GetContentFromCharType(context);
 			return "(?<" + content + ">" + Visit(context.expression()) + ")";
 		}
 		public override string VisitRenaming([NotNull] TheParser.RenamingContext context) {
-			var content = GetContentFromKeywordToken(context);
+			var content = GetRenameTypes(context);
 			var names = content.Split(':');
 			var name1 = names[0];
 			var name2 = names[1];
 			return "(?<" + name1 + "-" + name2 + ">" + Visit(context.expression()) + ")";
+		}
+		string GetRenameTypes(ParserRuleContext context) {
+			var text = context.GetText();
+			var split = text.Split(' ', '\t');
+			return split[split.Length - 1];
 		}
 
 		public override string VisitCaseInsensitive([NotNull] TheParser.CaseInsensitiveContext context) {
@@ -333,6 +338,25 @@ namespace ES.ON.Impression {
 			var token = context.GetToken(TheParser.NEVER, 0).Symbol;
 			nonParsingErrorListener.AddError(new NonParseErrorListener.ErrorData(token, "Unrecognized character sequence.", false));
 			throw new LexerErrorException();
+		}
+
+		public override string VisitNamedBackreference([NotNull] TheParser.NamedBackreferenceContext context) {
+			var varName = context.GetText().Substring(1);
+			return @"\k<" + varName + ">";
+		}
+
+		public override string VisitEnclosedAlternation([NotNull] TheParser.EnclosedAlternationContext context) {
+			var subExprLeft = context.expressionSeq(0);
+			string left;
+			if(subExprLeft.GetChild(0) is TheParser.AlternationContext el) left = VisitSubAlternation(el);
+			else left = Visit(subExprLeft);
+
+			var subExprRight = context.expressionSeq(1);
+			string right;
+			if(subExprRight.GetChild(0) is TheParser.AlternationContext er) right = VisitSubAlternation(er);
+			else right = Visit(subExprRight);
+
+			return "(" + left + "|" + right + ")";
 		}
 	}
 }

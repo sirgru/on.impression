@@ -131,16 +131,20 @@ namespace Impression.Test {
 
 		[Test]
 		public void AlternationTest() {
+			Assert.AreEqual(@"th(e|is|at)", ImpressionToRegex.ConvertNoOptions(@"'th''e'|'is'|'at' "));
+		}
+		[Test]
+		public void EnclosedAlternationTest() {
 			Assert.AreEqual(@"th(e|is|at)", ImpressionToRegex.ConvertNoOptions(@"'th'('e'|'is'|'at')"));
 		}
 
 		[Test]
 		public void ConditionTest1() {
-			Assert.AreEqual(@"(?(a)ab|bc)", ImpressionToRegex.ConvertNoOptions(@"if 'a' then 'ab' else 'bc'"));
+			Assert.AreEqual(@"(?(a)ab|bc)", ImpressionToRegex.ConvertNoOptions(@"if ('a') 'ab' else 'bc'"));
 		}
 		[Test]
 		public void ConditionTest2() {
-			Assert.AreEqual(@"(?(var)ab|bc)", ImpressionToRegex.ConvertNoOptions(@"if $var then 'ab' else 'bc'"));
+			Assert.AreEqual(@"(?(var)ab|bc)", ImpressionToRegex.ConvertNoOptions(@"if $var 'ab' else 'bc'"));
 		}
 
 		[Test]
@@ -172,6 +176,11 @@ namespace Impression.Test {
 			Assert.AreEqual(@"$`", ImpressionToRegex.ConvertNoOptions(@"before-match"));
 			Assert.AreEqual(@"$'", ImpressionToRegex.ConvertNoOptions(@"after-match"));
 			Assert.AreEqual(@"$_", ImpressionToRegex.ConvertNoOptions(@"input"));
+		}
+
+		[Test]
+		public void BasicNamedBackreference() {
+			Assert.AreEqual(@"(?<a>.)\k<a>", ImpressionToRegex.ConvertNoOptions(@"a as a $a"));
 		}
 	}
 }

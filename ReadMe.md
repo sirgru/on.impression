@@ -131,7 +131,7 @@ Empty sets ([]) aren't allowed.
 
 ### Grouping:
 
-Variables can contain letter, numbers and underscore, but cannot begin with a number.
+Variables can contain letter, numbers and underscore, and can be just a number.
 
 | Imp:                   | Regex:                   | Explanation:                                                  |
 | ---------------------- | ------------------------ | ------------------------------------------------------------- |

@@ -26,6 +26,7 @@ namespace ES.ON.Impression {
 			var commonTokenStream = new CommonTokenStream(lexer);
 			var parser = new TheParser(commonTokenStream);
 
+			// TODO: Parser error listening
 			//StringWriter writer = new StringWriter();
 			//var errorListener = new ParserErrorListener(writer);
 			//lexer.RemoveErrorListeners();

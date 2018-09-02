@@ -9,7 +9,8 @@ options
 expressionSeq: (expression)+;
 
 expression
-	: '(' expressionSeq ')' # ParenExpr
+	: '(' expressionSeq '|' expressionSeq ')'       # EnclosedAlternation
+	| '(' expressionSeq ')'                         # ParenExpr
 	| literal               # n__Literal
 	| set                   # n__Set
 	| not_set               # n__NotSet
@@ -19,22 +20,23 @@ expression
 	| not_short             # n__NotShort
 	| anchors               # n__Anchors
 	| expression NAME       # Naming
-    | expression RENAME     # Renaming
-    | grouping              # n__Grouping
-    | expression QUANTIFIER     # Quantifier
-    | expression ANY_GREEDY     # AnyGreedy
-    | expression ANY_LAZY       # AnyLazy
-    | expression ALL_GREEDY     # AllGreedy
-    | expression ALL_LAZY       # AllLazy
-    | expression MAYBE_GREEDY   # MaybeGreedy
-    | expression MAYBE_LAZY     # MaybeLazy
-    | expression '|' expression                         # Alternation
-    | IF expression THEN expression ELSE expression     # ConditionExpression
-    | IF VAR_USE THEN expression ELSE expression        # ConditionVariable
-    | additions             # n__Additions
-    | subst_special         # n__SubstSpecial
-    | lex_error             # n__LexicalError
-    ;
+	| expression RENAME     # Renaming
+	| grouping              # n__Grouping
+	| expression QUANTIFIER     # Quantifier
+	| expression ANY_GREEDY     # AnyGreedy
+	| expression ANY_LAZY       # AnyLazy
+	| expression ALL_GREEDY     # AllGreedy
+	| expression ALL_LAZY       # AllLazy
+	| expression MAYBE_GREEDY   # MaybeGreedy
+	| expression MAYBE_LAZY     # MaybeLazy
+	| expression '|' expression                         # Alternation
+	| IF '(' expression ')' expression ELSE expression  # ConditionExpression
+	| IF VAR_USE expression ELSE expression             # ConditionVariable
+	| additions             # n__Additions
+	| subst_special         # n__SubstSpecial
+	| VAR_USE               # NamedBackreference
+	| lex_error             # n__LexicalError
+	;
 
 literal
 	: EMPTY_LITERAL	# EmptyLiteral
@@ -53,8 +55,8 @@ not_set: NOT set # SetNegative;
 subtr_set: (set | not_set) '-' set       # SubtractionSet;
 
 type: CHAR_TYPE         # CharType
-    | NOT_CHAR_TYPE     # NotCharType
-    ;
+	| NOT_CHAR_TYPE     # NotCharType
+	;
 
 shorts
 	: C_WORD         # WordChar
@@ -101,10 +103,10 @@ additions
 
 subst_special
 	: NAMED_SUBST   # NamedSubst
-    | MATCH         # MatchKeyword
-    | BEFORE_MATCH  # BeforeMatchKeyword
-    | AFTER_MATCH   # AfterMatchKeyword
-    | INPUT         # InputKeyword
+	| MATCH         # MatchKeyword
+	| BEFORE_MATCH  # BeforeMatchKeyword
+	| AFTER_MATCH   # AfterMatchKeyword
+	| INPUT         # InputKeyword
 	;
 
 lex_error

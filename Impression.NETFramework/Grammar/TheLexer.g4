@@ -22,8 +22,9 @@ SET_UNION: '+';
 SET_DIFF: '-';
 
 fragment SEP: ( ' ' | '\t')+;
-CHAR_TYPE: 'type:' SEP [a-zA-Z-]+;
-NOT_CHAR_TYPE: 'not-type:' SEP [a-zA-Z-]+;
+fragment OPT_SEP: ( ' ' | '\t')*;
+CHAR_TYPE: 'type:' OPT_SEP [a-zA-Z-]+;
+NOT_CHAR_TYPE: 'not-type:' OPT_SEP [a-zA-Z-]+;
 
 C_WORD: 'w';
 C_WHITE_SPACE: 'ws';
@@ -37,7 +38,7 @@ TAIL_AFTER_WS: 'tail-after-ws';
 TAIL: 'tail';
 LAST_MATCH: 'last-match';
 
-fragment ID: [a-zA-Z_] [a-zA-Z0-9_]*;
+fragment ID: [a-zA-Z0-9_]+;
 NAME: 'as' SEP ID;
 RENAME: 'as' SEP ID ':' ID;
 
@@ -52,7 +53,6 @@ NOT_AFTER: 'not-after:';
 ATOMIC: 'atomic:';
 
 fragment DIGIT: [0-9];
-fragment OPT_SEP: ( ' ' | '\t')*;
 QUANTIFIER
 	: 'x' OPT_SEP DIGIT
 	| 'x' OPT_SEP DIGIT OPT_SEP '..' OPT_SEP (DIGIT)?
@@ -60,7 +60,6 @@ QUANTIFIER
 	;
 
 IF: 'if';
-THEN: 'then';
 ELSE: 'else';
 VAR_USE: '$' ID;
 
