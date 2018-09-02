@@ -15,15 +15,12 @@ namespace ES.ON.Impression {
 			}
 		}
 
-		public override string VisitStart([NotNull] TheParser.StartContext context) {
-			return SequentiallyAggregateFromChildren(context);
-		}
-
-		string SequentiallyAggregateFromChildren(IParseTree context, string currentResult = "") {
+		public override string VisitExpressionSeq([NotNull] TheParser.ExpressionSeqContext context) {
+			string result = "";
 			for(int i = 0; i < context.ChildCount; i++) {
-				currentResult += Visit(context.GetChild(i));
+				result += Visit(context.GetChild(i));
 			}
-			return currentResult;
+			return result;
 		}
 
 		public override string VisitLiteralWithContent([NotNull] TheParser.LiteralWithContentContext context) {
@@ -171,7 +168,7 @@ namespace ES.ON.Impression {
 		}
 
 		public override string VisitParenExpr([NotNull] TheParser.ParenExprContext context) {
-			return Visit(context.expression(0));
+			return Visit(context.expressionSeq());
 		}
 		public override string VisitNaming([NotNull] TheParser.NamingContext context) {
 			var content = GetContentFromKeywordToken(context);

@@ -8,7 +8,7 @@ namespace Impression.Test {
 		[Test]
 		public void EmptyLiteral() {
 			var ps = new ParserState(" '' ");
-			var context = ps.parser.start();
+			var context = ps.parser.expressionSeq();
 			var visitor = new Visitor();
 			visitor.TryVisit(context);
 
@@ -21,7 +21,7 @@ namespace Impression.Test {
 		[TestCase(" not [] ", ExpectedResult = 5)]
 		public int EmptySet(string input) {
 			var ps = new ParserState(input);
-			var context = ps.parser.start();
+			var context = ps.parser.expressionSeq();
 			var visitor = new Visitor();
 			visitor.TryVisit(context);
 

@@ -6,14 +6,14 @@ options
 	tokenVocab = TheLexer;
 }
 
-start: (expression)+;
+expressionSeq: (expression)+;
 
 expression
-	: paren_expression      # n__ParenExpr
+	: '(' expressionSeq ')' # ParenExpr
 	| literal               # n__Literal
 	| set                   # n__Set
 	| not_set               # n__NotSet
-	| sub_set               # n__SubSet
+	| subtr_set             # n__SubSet
 	| type                  # n__Type
 	| shorts                # n__Shorts
 	| not_short             # n__NotShort
@@ -34,8 +34,6 @@ expression
     | subst_special         # n__SubstSpecial
     ;
 
-paren_expression: '(' + expression + ')' #ParenExpr;
-
 literal
 	: EMPTY_LITERAL	# EmptyLiteral
 	| LITERAL		# LiteralWithContent
@@ -50,7 +48,7 @@ set
 
 not_set: NOT set # SetNegative;
 
-sub_set: (set | not_set) '-' set       # SubtractionSet;
+subtr_set: (set | not_set) '-' set       # SubtractionSet;
 
 type: CHAR_TYPE         # CharType
     | NOT_CHAR_TYPE     # NotCharType
@@ -106,3 +104,6 @@ subst_special
     | AFTER_MATCH   # AfterMatchKeyword
     | INPUT         # InputKeyword
 	;
+
+
+

@@ -32,7 +32,7 @@ namespace ES.ON.Impression {
 			//parser.RemoveErrorListeners();
 			//parser.AddErrorListener(errorListener);
 
-			var context = parser.start();
+			var context = parser.expressionSeq();
 			var visitor = new Visitor();
 			var result = visitor.TryVisit(context);
 
