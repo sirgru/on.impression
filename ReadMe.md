@@ -89,44 +89,44 @@ Escapes appear inside literals and sets.
 
 
 
-### Character Groups (classes):
+### Character Sets (classes):
 
-Character groups (classes) are denoted with `[]`. If a closing bracket must be used as part of data in the class, it must be escaped, e.g. `[(){}[\]]`. If the set must contain a backslash, it must be escaped with another backslash. 
+Character sets (classes) are denoted with `[]`. If a closing bracket must be used as part of data in the class, it must be escaped, e.g. `[(){}[\]]`. If the set must contain a backslash, it must be escaped with another backslash. 
 
-As opposed to regex, elements in character classes are not translated. Alternation should be used instead.
+Elements in character classes are not translated (`w` literally means 'w'). Alternation or direct representation should be used instead.
 
 Empty sets ([]) aren't allowed.
 
-| Imp:                | Regex:         | Explanation:                                                    |
-| ------------------- | -------------- | --------------------------------------------------------------- |
-| [cg]                | [cg]           | Matches any single character in character group (class) cg      |
-| not [cg]            | [^cg]          | Negation: Matches any single character that is not in group.    |
-| a..z + A..Z + [123] | [a-zA-Z123]    | Example of ranges.                                              |
-| a..z + [0-9] - [6]  | [a-z0-9-[6]]   | Character Class Subtraction. [1]                                |
-| type IsCyrillic     | \p{IsCyrillic} | Matches any 1 character in the Unicode category or named block. |
-| not-type Lu         | \P{Lu}         | Not \p                                                          |
-| w                   | \w             | Matches any character that can be part of a "word".             |
-| not w               | \W             | Not \w                                                          |
-| ws                  | \s             | Matches any white-space character.                              |
-| not ws              | \S             | Not \s                                                          |
-| d                   | \d             | Matches a digit.                                                |
-| not d               | \D             | Not \d                                                          |
+| Imp:                    | Regex:         | Explanation:                                                    |
+| ----------------------- | -------------- | --------------------------------------------------------------- |
+| [cg]                    | [cg]           | Matches any single character in character set (class) cg        |
+| not: [cg]               | [^cg]          | Negation: Matches any single character that is not in set.      |
+| [a..z] + [A..Z] + [123] | [a-zA-Z123]    | Example of 2 ranges combined with a set.                        |
+| [a..z] + [0..9] - [6]   | [a-z0-9-[6]]   | Character Class Subtraction. [1]                                |
+| type: IsCyrillic        | \p{IsCyrillic} | Matches any 1 character in the Unicode category or named block. |
+| not-type: Lu            | \P{Lu}         | Not \p                                                          |
+| w                       | \w             | Matches any character that can be part of a "word".             |
+| not: w                  | \W             | Not \w                                                          |
+| ws                      | \s             | Matches any white-space character.                              |
+| not: ws                 | \S             | Not \s                                                          |
+| d                       | \d             | Matches a digit.                                                |
+| not: d                  | \D             | Not \d                                                          |
 
 [1] Subtraction has higher priority than addition, thus any additions after the subtraction are treated as belonging to the subtraction.
 
 
 ### Anchors:
 
-| Imp:        | Regex:    | Explanation:                                                   |
-| ----------- | --------- | -------------------------------------------------------------- |
-| start       | ^         | Start of Line                                                  |
-| end         | $         | End of Line                                                    |
-| head        | \A        | Start of String                                                |
-| tail-not-ws | (?=\s*\z) | Match at the end of the string before trailing whitespace.     |
-| tail        | \z        | Match at the end of the string, including trailing whitespace. |
-| last-match  | \G        | Match at the point where the previous match ended.             |
-| wb          | \b        | Match on a word boundary.                                      |
-| not wb      | \B        | Match not occur on a word boundary.                            |
+| Imp:          | Regex:    | Explanation:                                                        |
+| ------------- | --------- | ------------------------------------------------------------------- |
+| start         | ^         | Start of Line                                                       |
+| end           | $         | End of Line                                                         |
+| head          | \A        | Start of String                                                     |
+| tail-after-ws | (?=\s*\z) | Match at the end of the string before optional trailing whitespace. |
+| tail          | \z        | Match at the end of the string, including trailing whitespace.      |
+| last-match    | \G        | Match at the point where the previous match ended.                  |
+| wb            | \b        | Match on a word boundary.                                           |
+| not: wb       | \B        | Match not occur on a word boundary.                                 |
 
 
 ### Grouping:
@@ -136,15 +136,15 @@ Variables can contain letter, numbers and underscore, but cannot begin with a nu
 | Imp:                   | Regex:                   | Explanation:                                                  |
 | ---------------------- | ------------------------ | ------------------------------------------------------------- |
 | -                      | ( subexp )               | Captures the matched subexp and assigns it an index variable. |
-| subexpr as name        | (?< name > subexp )      | Captures the matched subexp into a named group.               |
+| subexpr as name        | (?<name> subexp )        | Captures the matched subexp into a named group.               |
 | subexpr as name1:name2 | (?<name1-name2> subexpr) | Defines a balancing group definition.                         |
 | (subexpr)              | (?: subexpr )            | Defines a noncapturing  group.                                |
-| i subexpr              | (?i: subexpr )           | Applies case invariance within subexpr.                       |
-| before subexpr         | (?= subexpr )            | Positive lookahead.                                           |
-| not-before subexpr     | (?! subexpr )            | Negative lookahead.                                           |
-| after subexpr          | (?<= subexpr )           | Positive lookbehind.                                          |
-| not-after subexpr      | (?<! subexpression )     | Negative lookbehind.                                          |
-| atomic subexpr         | (?> subexpr )            | Atomic (non-backtracking) subexpr.                            |
+| i: subexpr             | (?i: subexpr )           | Applies case invariance within subexpr.                       |
+| before: subexpr        | (?= subexpr )            | Positive lookahead.                                           |
+| not-before: subexpr    | (?! subexpr )            | Negative lookahead.                                           |
+| after: subexpr         | (?<= subexpr )           | Positive lookbehind.                                          |
+| not-after: subexpr     | (?<! subexpression )     | Negative lookbehind.                                          |
+| atomic: subexpr        | (?> subexpr )            | Atomic (non-backtracking) subexpr.                            |
 
 
 ### Quantifiers:
@@ -153,19 +153,19 @@ Quantifiers are specified in range syntax (closed and open ranges), with preferr
 
 Quantifiers thus use the same syntax for greedy and non-greedy matching.
 
-| Imp:           | Regex:     | Explanation:                                                                         |
-| -------------- | ---------- | ------------------------------------------------------------------------------------ |
-| x 0..          | *          | Matches the previous expression zero or more times.                                  |
-| x 1..          | +          | Matches the previous expression one or more times.                                   |
-| x 0..1         | ?          | Matches the previous expression zero or one time.                                    |
-| x n            | { n }      | Matches the previous expression exactly n times.                                     |
-| x n..          | { n ,}     | Matches the previous expression at least n times.                                    |
-| x n..m (m > n) | { n , m }  | Matches the previous expression at least n times, but no more than m times.          |
-| x ..0          | *?         | Matches the previous expression zero or more times, but as few times as possible.    |
-| x ..1          | +?         | Matches the previous expression one or more times, but as few times as possible.     |
-| x 1..0         | ??         | Matches the previous expression zero or one time, but as few times as possible.      |
-| x ..n          | { n ,}?    | Matches the previous expression at least n times, but as few times as possible.      |
-| x n..m (m < n) | { n , m }? | Matches the previous expression between n and m times, but as few times as possible. |
+| Imp:           | Regex:     | Explanation:                                                                |
+| -------------- | ---------- | --------------------------------------------------------------------------- |
+| x 0..          | *          | Matches the expression zero or more times.                                  |
+| x 1..          | +          | Matches the expression one or more times.                                   |
+| x 0..1         | ?          | Matches the expression zero or one time.                                    |
+| x n            | { n }      | Matches the expression exactly n times.                                     |
+| x n..          | { n ,}     | Matches the expression at least n times.                                    |
+| x n..m (m > n) | { n , m }  | Matches the expression at least n times, but no more than m times.          |
+| x ..0          | *?         | Matches the expression zero or more times, but as few times as possible.    |
+| x ..1          | +?         | Matches the expression one or more times, but as few times as possible.     |
+| x 1..0         | ??         | Matches the expression zero or one time, but as few times as possible.      |
+| x ..n          | { n ,}?    | Matches the expression at least n times, but as few times as possible.      |
+| x n..m (m < n) | { n , m }? | Matches the expression between n and m times, but as few times as possible. |
 
 
 ### Backreferences:
@@ -201,41 +201,46 @@ Quantifiers thus use the same syntax for greedy and non-greedy matching.
 
 We always use m, n and s options and never use x option in the generated Regex. We explicitly specify i option. 
 
-| Imp:       | Regex:                    | Explanation:                                |
-| ---------- | ------------------------- | ------------------------------------------- |
-| nl         | \r?\n                     | OS-independent newline.                     |
-| word       | \w+                       | Word.                                       |
-| int        | \d+                       | Integral number.                            |
-| whitespace | \s+                       | White space.                                |
-| bw         | `((?<=\W)(?=\w)|^(?=\w))` | Begin word.                                 |
-| ew         | `((?<=\w)(?=\W)|(?=\w)$)` | End word.                                   |
-| c          | `[^\r\n]`                 | Match exactly 1 character, except \r or \n. |
-| .          | `.` singleline            | Match exactly 1 character.                  |
+| Imp:       | Regex:                    | Explanation:                        |
+| ---------- | ------------------------- | ----------------------------------- |
+| nl         | \r?\n                     | OS-independent newline.             |
+| word       | \w+                       | Word.                               |
+| int        | \d+                       | Integral number.                    |
+| whitespace | \s+                       | White space.                        |
+| bw         | `((?<=\W)(?=\w)|^(?=\w))` | Begin word.                         |
+| ew         | `((?<=\w)(?=\W)|(?=\w)$)` | End word.                           |
+| c          | `[^\r\n]`                 | Match 1 character, except \r or \n. |
+| a          | `.` singleline            | Match any character.                |
 
-| Imp:            | Regex:     |
-| --------------- | ---------- |
-| expr any-greedy | `(expr)*`  |
-| expr any        | `(expr)*?` |
-| expr all-greedy | `(expr)+`  |
-| expr all        | `(expr)+?` |
-| expr maybe      | `(expr)?`  |
+Quantifiers can also have full, read-friendly names:
+
+| Imp:             | Regex:     |
+| ---------------- | ---------- |
+| expr :any        | `(expr)*`  |
+| expr :any-lazy   | `(expr)*?` |
+| expr :all        | `(expr)+`  |
+| expr :all-lazy   | `(expr)+?` |
+| expr :maybe      | `(expr)?`  |
+| expr :maybe-lazy | `(expr)??` |
 
 Which Means:
 
-| Imp:         | Regex:             |
-| ------------ | ------------------ |
-| c any-greedy | `([^\r\n])*`       |
-| c any        | `([^\r\n])*?`      |
-| . any-greedy | `(.)*` singleline  |
-| . any        | `(.)*?` singleline |
-| c all-greedy | `([^\r\n])+`       |
-| c all        | `([^\r\n])+?`      |
-| . all-greedy | `(.)+` singleline  |
-| . all        | `(.)+?` singleline |
-| c maybe      | `([^\r\n])?`       |
-| . maybe      | `(.)?`             |
+| Imp:          | Regex:             |
+| ------------- | ------------------ |
+| c :any        | `([^\r\n])*`       |
+| c :any-lazy   | `([^\r\n])*?`      |
+| a :any        | `(.)*` singleline  |
+| a :any-lazy   | `(.)*?` singleline |
+| c :all        | `([^\r\n])+`       |
+| c :all-lazy   | `([^\r\n])+?`      |
+| a :all        | `(.)+` singleline  |
+| a :all-lazy   | `(.)+?` singleline |
+| c :maybe      | `([^\r\n])?`       |
+| c :maybe-lazy | `([^\r\n])??`      |
+| a :maybe      | `(.)?`             |
+| a :maybe-lazy | `(.)??`            |
 
-> Mnemonics: the shorthand keywords (w, wb..) represent 1 or 0 length selections. Complete words (word, whitespace) represent a complete selection counterpart, a series of characters.
+> Mnemonics: the shorthand keywords (c, a, w...) represent 1 length selections. Complete words (word, whitespace) represent a complete selection counterpart, a series of characters.
 
 
 ### Grammar:

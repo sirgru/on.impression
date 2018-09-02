@@ -26,7 +26,7 @@ namespace Impression.Test {
 
 		[Test]
 		public void BasicNegativeSets() {
-			Assert.AreEqual(@"[^ab*]", ImpressionToRegex.ConvertNoOptions(@" not [ab*]"));
+			Assert.AreEqual(@"[^ab*]", ImpressionToRegex.ConvertNoOptions(@" not: [ab*]"));
 		}
 
 		[Test]
@@ -56,12 +56,12 @@ namespace Impression.Test {
 
 		[Test]
 		public void BasicType() {
-			Assert.AreEqual(@"\p{Lu}", ImpressionToRegex.ConvertNoOptions(@"type Lu"));
+			Assert.AreEqual(@"\p{Lu}", ImpressionToRegex.ConvertNoOptions(@"type: Lu"));
 		}
 
 		[Test]
 		public void BasicNotType() {
-			Assert.AreEqual(@"\P{Lu}", ImpressionToRegex.ConvertNoOptions(@"not-type		  Lu"));
+			Assert.AreEqual(@"\P{Lu}", ImpressionToRegex.ConvertNoOptions(@"not-type:		  Lu"));
 		}
 
 		[Test]
@@ -71,12 +71,12 @@ namespace Impression.Test {
 
 		[Test]
 		public void NotShortsTests() {
-			Assert.AreEqual(@"\W\S\D\B", ImpressionToRegex.ConvertNoOptions(@"not w not ws not d not wb"));
+			Assert.AreEqual(@"\W\S\D\B", ImpressionToRegex.ConvertNoOptions(@"not: w not: ws not: d not: wb"));
 		}
 
 		[Test]
 		public void AnchorsTests() {
-			Assert.AreEqual(@"^$\A(?=\s*\z)\z\G", ImpressionToRegex.ConvertNoOptions(@"start end head tail-not-ws tail last-match"));
+			Assert.AreEqual(@"^$\A(?=\s*\z)\z\G", ImpressionToRegex.ConvertNoOptions(@"start end head tail-after-ws tail last-match"));
 		}
 
 		[Test]
@@ -106,12 +106,12 @@ namespace Impression.Test {
 
 		[Test]
 		public void BasicGrouping() {
-			Assert.AreEqual(@"(?i:a)", ImpressionToRegex.ConvertNoOptions(@"i 'a'"));
-			Assert.AreEqual(@"(?=a)", ImpressionToRegex.ConvertNoOptions(@"before 'a'"));
-			Assert.AreEqual(@"(?!a)", ImpressionToRegex.ConvertNoOptions(@"not-before 'a'"));
-			Assert.AreEqual(@"(?<=a)", ImpressionToRegex.ConvertNoOptions(@"after 'a'"));
-			Assert.AreEqual(@"(?<!a)", ImpressionToRegex.ConvertNoOptions(@"not-after 'a'"));
-			Assert.AreEqual(@"(?>a)", ImpressionToRegex.ConvertNoOptions(@"atomic 'a'"));
+			Assert.AreEqual(@"(?i:a)", ImpressionToRegex.ConvertNoOptions(@"i: 'a'"));
+			Assert.AreEqual(@"(?=a)", ImpressionToRegex.ConvertNoOptions(@"before: 'a'"));
+			Assert.AreEqual(@"(?!a)", ImpressionToRegex.ConvertNoOptions(@"not-before: 'a'"));
+			Assert.AreEqual(@"(?<=a)", ImpressionToRegex.ConvertNoOptions(@"after: 'a'"));
+			Assert.AreEqual(@"(?<!a)", ImpressionToRegex.ConvertNoOptions(@"not-after: 'a'"));
+			Assert.AreEqual(@"(?>a)", ImpressionToRegex.ConvertNoOptions(@"atomic: 'a'"));
 		}
 
 		[Test]
@@ -150,18 +150,19 @@ namespace Impression.Test {
 			Assert.AreEqual(@"\d+", ImpressionToRegex.ConvertNoOptions(@"int"));
 			Assert.AreEqual(@"\s+", ImpressionToRegex.ConvertNoOptions(@"whitespace"));
 			Assert.AreEqual(@"[^\r\n]", ImpressionToRegex.ConvertNoOptions(@"c"));
-			Assert.AreEqual(@".", ImpressionToRegex.ConvertNoOptions(@"."));
+			Assert.AreEqual(@".", ImpressionToRegex.ConvertNoOptions(@"a"));
 			Assert.AreEqual(@"((?<=\W)(?=\w)|^(?=\w))", ImpressionToRegex.ConvertNoOptions(@"bw"));
 			Assert.AreEqual(@"((?<=\w)(?=\W)|(?=\w)$)", ImpressionToRegex.ConvertNoOptions(@"ew"));
 		}
 
 		[Test]
 		public void Additions2Tests() {
-			Assert.AreEqual(@"(a)*", ImpressionToRegex.ConvertNoOptions(@"'a' any-greedy"));
-			Assert.AreEqual(@"(a)*?", ImpressionToRegex.ConvertNoOptions(@"'a' any"));
-			Assert.AreEqual(@"(a)+", ImpressionToRegex.ConvertNoOptions(@"'a' all-greedy"));
-			Assert.AreEqual(@"(a)+?", ImpressionToRegex.ConvertNoOptions(@"'a' all"));
-			Assert.AreEqual(@"(a)?", ImpressionToRegex.ConvertNoOptions(@"'a' maybe"));
+			Assert.AreEqual(@"(a)*", ImpressionToRegex.ConvertNoOptions(@"'a' :any"));
+			Assert.AreEqual(@"(a)*?", ImpressionToRegex.ConvertNoOptions(@"'a' :any-lazy"));
+			Assert.AreEqual(@"(a)+", ImpressionToRegex.ConvertNoOptions(@"'a' :all"));
+			Assert.AreEqual(@"(a)+?", ImpressionToRegex.ConvertNoOptions(@"'a' :all-lazy"));
+			Assert.AreEqual(@"(a)?", ImpressionToRegex.ConvertNoOptions(@"'a' :maybe"));
+			Assert.AreEqual(@"(a)??", ImpressionToRegex.ConvertNoOptions(@"'a' :maybe-lazy"));
 		}
 
 		[Test]

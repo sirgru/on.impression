@@ -5,12 +5,14 @@ using Impression.NETFramework.Grammar;
 
 namespace ES.ON.Impression {
 	public class Visitor : TheParserBaseVisitor<string> {
-		public SemanticErrorListener semanticErrorListener { get; private set; } = new SemanticErrorListener();
+		public NonParseErrorListener nonParsingErrorListener { get; private set; } = new NonParseErrorListener();
 
 		public string TryVisit([NotNull] IParseTree tree) {
 			try {
 				return Visit(tree);
 			} catch(SemanticErrorException) {
+				return null;
+			} catch(LexerErrorException) {
 				return null;
 			}
 		}
@@ -55,13 +57,13 @@ namespace ES.ON.Impression {
 
 		public override string VisitEmptyLiteral([NotNull] TheParser.EmptyLiteralContext context) {
 			var token = context.EMPTY_LITERAL().Symbol;
-			semanticErrorListener.AddSemanticError(new SemanticErrorListener.ErrorData(token, "Empty literals aren't allowed."));
+			nonParsingErrorListener.AddError(new NonParseErrorListener.ErrorData(token, "Empty literals aren't allowed.", true));
 			throw new SemanticErrorException();
 		}
 
 		public override string VisitEmptySet([NotNull] TheParser.EmptySetContext context) {
 			var token = context.EMPTY_SET().Symbol;
-			semanticErrorListener.AddSemanticError(new SemanticErrorListener.ErrorData(token, "Empty sets aren't allowed."));
+			nonParsingErrorListener.AddError(new NonParseErrorListener.ErrorData(token, "Empty sets aren't allowed.", true));
 			throw new SemanticErrorException();
 		}
 
@@ -81,8 +83,10 @@ namespace ES.ON.Impression {
 		}
 
 		public override string VisitRangeSet([NotNull] TheParser.RangeSetContext context) {
-			var first = ConvertSpecialCharactersForRange(context.CHAR(0).GetText());
-			var second = ConvertSpecialCharactersForRange(context.CHAR(1).GetText());
+			var content = context.GetText().Split('.');
+
+			var first = ConvertSpecialCharactersForRange(content[0]);
+			var second = ConvertSpecialCharactersForRange(content[content.Length-1]);
 
 			return "[" + first + "-" + second + "]";
 		}
@@ -157,7 +161,7 @@ namespace ES.ON.Impression {
 		public override string VisitHead([NotNull] TheParser.HeadContext context) {
 			return @"\A";
 		}
-		public override string VisitTailNotWS([NotNull] TheParser.TailNotWSContext context) {
+		public override string VisitTailAfterWS([NotNull] TheParser.TailAfterWSContext context) {
 			return @"(?=\s*\z)";
 		}
 		public override string VisitTail([NotNull] TheParser.TailContext context) {
@@ -270,27 +274,21 @@ namespace ES.ON.Impression {
 		}
 		public override string VisitWord([NotNull] TheParser.WordContext context) {
 			return @"\w+";
-
 		}
 		public override string VisitInt([NotNull] TheParser.IntContext context) {
 			return @"\d+";
-
 		}
 		public override string VisitWhitespace([NotNull] TheParser.WhitespaceContext context) {
 			return @"\s+";
-
 		}
-		public override string VisitC([NotNull] TheParser.CContext context) {
+		public override string VisitAnyNotNL([NotNull] TheParser.AnyNotNLContext context) {
 			return @"[^\r\n]";
-
 		}
-		public override string VisitDot([NotNull] TheParser.DotContext context) {
+		public override string VisitAnyChar([NotNull] TheParser.AnyCharContext context) {
 			return @".";
-
 		}
 		public override string VisitBeginWord([NotNull] TheParser.BeginWordContext context) {
 			return @"((?<=\W)(?=\w)|^(?=\w))";
-
 		}
 		public override string VisitEndWord([NotNull] TheParser.EndWordContext context) {
 			return @"((?<=\w)(?=\W)|(?=\w)$)";
@@ -299,17 +297,20 @@ namespace ES.ON.Impression {
 		public override string VisitAnyGreedy([NotNull] TheParser.AnyGreedyContext context) {
 			return @"(" + Visit(context.expression()) + ")*";
 		}
-		public override string VisitAny([NotNull] TheParser.AnyContext context) {
+		public override string VisitAnyLazy([NotNull] TheParser.AnyLazyContext context) {
 			return @"(" + Visit(context.expression()) + ")*?";
 		}
 		public override string VisitAllGreedy([NotNull] TheParser.AllGreedyContext context) {
 			return @"(" + Visit(context.expression()) + ")+";
 		}
-		public override string VisitAll([NotNull] TheParser.AllContext context) {
+		public override string VisitAllLazy([NotNull] TheParser.AllLazyContext context) {
 			return @"(" + Visit(context.expression()) + ")+?";
 		}
-		public override string VisitMaybe([NotNull] TheParser.MaybeContext context) {
+		public override string VisitMaybeGreedy([NotNull] TheParser.MaybeGreedyContext context) {
 			return @"(" + Visit(context.expression()) + ")?";
+		}
+		public override string VisitMaybeLazy([NotNull] TheParser.MaybeLazyContext context) {
+			return @"(" + Visit(context.expression()) + ")??";
 		}
 
 		public override string VisitNamedSubst([NotNull] TheParser.NamedSubstContext context) {
@@ -326,6 +327,12 @@ namespace ES.ON.Impression {
 		}
 		public override string VisitInputKeyword([NotNull] TheParser.InputKeywordContext context) {
 			return @"$_";
+		}
+
+		public override string VisitUnrecognizedCharacterSequence([NotNull] TheParser.UnrecognizedCharacterSequenceContext context) {
+			var token = context.GetToken(TheParser.NEVER, 0).Symbol;
+			nonParsingErrorListener.AddError(new NonParseErrorListener.ErrorData(token, "Unrecognized character sequence.", false));
+			throw new LexerErrorException();
 		}
 	}
 }

@@ -37,7 +37,7 @@ namespace ES.ON.Impression {
 			var result = visitor.TryVisit(context);
 
 			//if(errorListener.lastError != null) throw new InvalidOperationException("Parsing Error: " + errorListener.lastError.message);
-			if(visitor.semanticErrorListener.lastError != null) throw new InvalidOperationException("Semantic Error: " + visitor.semanticErrorListener.lastError.message);
+			if(visitor.nonParsingErrorListener.lastError != null) throw new InvalidOperationException("Semantic Error: " + visitor.nonParsingErrorListener.lastError.message);
 
 			return result;
 		}

@@ -23,15 +23,17 @@ expression
     | grouping              # n__Grouping
     | expression QUANTIFIER     # Quantifier
     | expression ANY_GREEDY     # AnyGreedy
-    | expression ANY            # Any
+    | expression ANY_LAZY       # AnyLazy
     | expression ALL_GREEDY     # AllGreedy
-    | expression ALL            # All
-    | expression MAYBE          # Maybe
+    | expression ALL_LAZY       # AllLazy
+    | expression MAYBE_GREEDY   # MaybeGreedy
+    | expression MAYBE_LAZY     # MaybeLazy
     | expression '|' expression                         # Alternation
     | IF expression THEN expression ELSE expression     # ConditionExpression
     | IF VAR_USE THEN expression ELSE expression        # ConditionVariable
     | additions             # n__Additions
     | subst_special         # n__SubstSpecial
+    | lex_error             # n__LexicalError
     ;
 
 literal
@@ -42,7 +44,7 @@ literal
 set
 	: EMPTY_SET			# EmptySet
 	| SET				# SetWithContent
-	| CHAR '..' CHAR	# RangeSet
+	| RANGE_SET	        # RangeSet
 	| set '+' set		# CombinationSet
 	;
 
@@ -69,12 +71,12 @@ not_short
 	;
 
 anchors
-	: START         # StartLine
-	| END           # EndLine
-	| HEAD          # Head
-	| TAIL_NOT_WS   # TailNotWS
-	| TAIL          # Tail
-	| LAST_MATCH    # LastMatch
+	: START             # StartLine
+	| END               # EndLine
+	| HEAD              # Head
+	| TAIL_AFTER_WS     # TailAfterWS
+	| TAIL              # Tail
+	| LAST_MATCH        # LastMatch
 	;
 
 grouping
@@ -91,8 +93,8 @@ additions
 	| WORD          # Word
 	| INT           # Int
 	| WHITESPACE    # Whitespace
-	| C             # C
-	| DOT           # Dot
+	| C_ANY_NOT_NL  # AnyNotNL
+	| C_ANY         # AnyChar
 	| BEGIN_WORD    # BeginWord
 	| END_WORD      # EndWord
 	;
@@ -105,5 +107,8 @@ subst_special
     | INPUT         # InputKeyword
 	;
 
+lex_error
+	: NEVER+                 # UnrecognizedCharacterSequence
+	;
 
 

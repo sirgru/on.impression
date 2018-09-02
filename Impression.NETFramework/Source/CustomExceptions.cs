@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.Serialization;
 
 namespace ES.ON.Impression {
@@ -12,4 +12,13 @@ namespace ES.ON.Impression {
 		protected SemanticErrorException(SerializationInfo info, StreamingContext context) : base(info, context) { }
 	}
 
+	public class LexerErrorException : Exception {
+		public LexerErrorException() : base() { }
+
+		public LexerErrorException(string message) : base(message) { }
+
+		public LexerErrorException(String message, Exception innerException) : base(message, innerException) { }
+
+		protected LexerErrorException(SerializationInfo info, StreamingContext context) : base(info, context) { }
+	}
 }

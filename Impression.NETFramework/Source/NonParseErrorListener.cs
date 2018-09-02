@@ -3,21 +3,23 @@ using System.Collections.Generic;
 
 namespace ES.ON.Impression {
 	// TODO: Consider restructuring
-	public class SemanticErrorListener {
+	public class NonParseErrorListener {
 		public class ErrorData {
 			public IToken token { get; private set; }
 
-			public int line { get; private set; }
-			public int charPositionInLine { get; private set; }
-			public string text { get; private set; }
-			public string message { get; private set; }
+			public int		line				{ get; private set; }
+			public int		charPositionInLine	{ get; private set; }
+			public string	text				{ get; private set; }
+			public string	message				{ get; private set; }
+			public bool		isSemantic			{ get; private set; }
 
-			public ErrorData(IToken token, string message) {
+			public ErrorData(IToken token, string message, bool isSemantic) {
 				this.token = token;
 				this.line = token.Line;
 				this.charPositionInLine = token.StartIndex;
 				this.text = token.Text;
 				this.message = message;
+				this.isSemantic = isSemantic;
 			}
 
 			public ErrorData(int line, int charPositionInLine, string text, string message) {
@@ -36,8 +38,9 @@ namespace ES.ON.Impression {
 			errors.Clear();
 		}
 
-		public void AddSemanticError(ErrorData errorData) {
+		public void AddError(ErrorData errorData) {
 			errors.Add(errorData);
 		}
 	}
+
 }
