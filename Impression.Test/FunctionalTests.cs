@@ -182,5 +182,10 @@ namespace Impression.Test {
 		public void BasicNamedBackreference() {
 			Assert.AreEqual(@"(?<a>.)\k<a>", ImpressionToRegex.ConvertNoOptions(@"a as a $a"));
 		}
+
+		[Test]
+		public void SeparationByComma() {
+			Assert.AreEqual(@"ab", ImpressionToRegex.ConvertNoOptions(@"'a' , 'b'"));
+		}
 	}
 }

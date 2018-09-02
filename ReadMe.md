@@ -206,7 +206,7 @@ We always use m, n and s options and never use x option in the generated Regex. 
 | nl         | \r?\n                     | OS-independent newline.             |
 | word       | \w+                       | Word.                               |
 | int        | \d+                       | Integral number.                    |
-| whitespace | \s+                       | White space.                        |
+| whitespace | \s+                       | At least 1 white space character.   |
 | bw         | `((?<=\W)(?=\w)|^(?=\w))` | Begin word.                         |
 | ew         | `((?<=\w)(?=\W)|(?=\w)$)` | End word.                           |
 | c          | `[^\r\n]`                 | Match 1 character, except \r or \n. |
@@ -246,5 +246,9 @@ Which Means:
 ### Grammar:
 
 Ax expression consists of a series of sub-expressions. Subexpressions may be enclosed in parenthesis, which do not influence capturing. Subexpressions may be prefixed with a positioning keyword, or a case-insensitive modifier keyword, or may be suffixed with a quantifier. The types of expressions that associate right to left (quantification and naming) have higher precedence than regular rules, for example `'ab' | 'cd' x 1..3` evaluates as `'ab' | ('cd' x 1..3)`.
+
+Spaces, tabs and newlines have no meaning.
+
+A comma character can be used to arbitrarily separate elements in the expression, it will have no meaning and will be discarded like a space.
 
 
