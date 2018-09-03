@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Impression.NETFramework\Impression.NETFramework.csproj" />
+    <ProjectReference Include="..\Impression.NETCore\Impression.NETCore.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Grammar\TheLexer.g4" />
+    <None Remove="Grammar\TheParser.g4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Antlr4" Version="4.6.5" />
+    <PackageReference Include="Antlr4.CodeGenerator" Version="4.6.5" />
+    <PackageReference Include="Antlr4.Runtime" Version="4.6.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Antlr4 Update="Grammar\TheLexer.g4">
+      <CustomToolNamespace>Impression.NETFramework.Grammar</CustomToolNamespace>
+    </Antlr4>
+    <Antlr4 Update="Grammar\TheParser.g4">
+      <CustomToolNamespace>Impression.NETFramework.Grammar</CustomToolNamespace>
+    </Antlr4>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Grammar\TheLexer.g4.cs">
+      <DependentUpon>TheLexer.g4</DependentUpon>
+    </Compile>
+    <Compile Update="Grammar\TheParser.g4.cs">
+      <DependentUpon>TheParser.g4</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+</Project>
