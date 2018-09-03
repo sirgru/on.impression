@@ -11,16 +11,6 @@ namespace ES.ON.Impression {
 			this.errorListener = errorListener;
 		}
 
-		public string TryVisit([NotNull] IParseTree tree) {
-			try {
-				return Visit(tree);
-			} catch(SemanticErrorException) {
-				return null;
-			} catch(LexerErrorException) {
-				return null;
-			}
-		}
-
 		public override string VisitExpressionSeq([NotNull] TheParser.ExpressionSeqContext context) {
 			string result = "";
 			for(int i = 0; i < context.ChildCount; i++) {
@@ -62,13 +52,13 @@ namespace ES.ON.Impression {
 		public override string VisitEmptyLiteral([NotNull] TheParser.EmptyLiteralContext context) {
 			var token = context.EMPTY_LITERAL().Symbol;
 			errorListener.AddSemanticError(token, token, "Empty literals aren't allowed.");
-			throw new SemanticErrorException();
+			return "";
 		}
 
 		public override string VisitEmptySet([NotNull] TheParser.EmptySetContext context) {
 			var token = context.EMPTY_SET().Symbol;
 			errorListener.AddSemanticError(token, token, "Empty sets aren't allowed.");
-			throw new SemanticErrorException();
+			return "[]";
 		}
 
 		public override string VisitSetWithContent([NotNull] TheParser.SetWithContentContext context) {
@@ -339,7 +329,7 @@ namespace ES.ON.Impression {
 
 		public override string VisitLexicalError([NotNull] TheParser.LexicalErrorContext context) {
 			errorListener.AddLexicalError(context.start, context.stop, "Unrecognized character sequence.");
-			throw new LexerErrorException();
+			return "";
 		}
 
 		public override string VisitNamedBackreference([NotNull] TheParser.NamedBackreferenceContext context) {

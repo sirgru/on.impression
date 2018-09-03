@@ -12,7 +12,7 @@ namespace Impression.Test {
 			var ps = new ParserState(input);
 			var context = ps.parser.expressionSeq();
 			var visitor = new Visitor(ps.errorListener);
-			visitor.TryVisit(context);
+			visitor.Visit(context);
 
 			Assert.AreNotEqual(null, visitor.errorListener.lastError);
 		}

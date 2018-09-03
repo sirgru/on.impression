@@ -10,7 +10,7 @@ namespace Impression.Test {
 			var ps = new ParserState(" '' ");
 			var context = ps.parser.expressionSeq();
 			var visitor = new Visitor(ps.errorListener);
-			visitor.TryVisit(context);
+			visitor.Visit(context);
 
 			var error = visitor.errorListener.lastError;
 			Assert.AreEqual("''", error.tokenStart.Text);
@@ -23,7 +23,7 @@ namespace Impression.Test {
 			var ps = new ParserState(input);
 			var context = ps.parser.expressionSeq();
 			var visitor = new Visitor(ps.errorListener);
-			visitor.TryVisit(context);
+			visitor.Visit(context);
 
 			var error = visitor.errorListener.lastError;
 			Assert.AreEqual("[]", error.tokenStart.Text);
