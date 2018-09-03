@@ -25,7 +25,7 @@ namespace ES.ON.Impression {
 			var commonTokenStream = new CommonTokenStream(lexer);
 			var parser = new TheParser(commonTokenStream);
 
-			var errorListener = new ErrorListener();
+			var errorListener = new ErrorListener(commonTokenStream);
 			lexer.RemoveErrorListeners();
 			parser.RemoveErrorListeners();
 			parser.AddErrorListener(errorListener);

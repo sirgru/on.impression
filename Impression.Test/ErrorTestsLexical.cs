@@ -11,7 +11,7 @@ namespace Impression.Test {
 		public void LexicalError(string input) {
 			var ps = new ParserState(input);
 			var context = ps.parser.expressionSeq();
-			var visitor = new Visitor();
+			var visitor = new Visitor(ps.errorListener);
 			visitor.TryVisit(context);
 
 			Assert.AreNotEqual(null, visitor.errorListener.lastError);

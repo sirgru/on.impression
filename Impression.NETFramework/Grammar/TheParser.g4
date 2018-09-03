@@ -35,7 +35,7 @@ expression
 	| additions				# n__Additions
 	| subst_special			# n__SubstSpecial
 	| VAR_USE				# NamedBackreference
-	| lex_error				# n__LexicalError
+	| lex_error				# LexicalError
 	;
 
 literal
@@ -110,7 +110,7 @@ subst_special
 	;
 
 lex_error
-	: NEVER+				 # UnrecognizedCharacterSequence
+	: NEVER+
 	;
 
 

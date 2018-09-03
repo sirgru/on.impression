@@ -7,10 +7,6 @@ namespace ES.ON.Impression {
 	public class Visitor : TheParserBaseVisitor<string> {
 		public ErrorListener errorListener { get; private set; }
 
-		public Visitor() {
-			errorListener = new ErrorListener();
-		}
-
 		public Visitor(ErrorListener errorListener) {
 			this.errorListener = errorListener;
 		}
@@ -65,13 +61,13 @@ namespace ES.ON.Impression {
 
 		public override string VisitEmptyLiteral([NotNull] TheParser.EmptyLiteralContext context) {
 			var token = context.EMPTY_LITERAL().Symbol;
-			errorListener.AddSemanticError(token, "Empty literals aren't allowed.");
+			errorListener.AddSemanticError(token, token, "Empty literals aren't allowed.");
 			throw new SemanticErrorException();
 		}
 
 		public override string VisitEmptySet([NotNull] TheParser.EmptySetContext context) {
 			var token = context.EMPTY_SET().Symbol;
-			errorListener.AddSemanticError(token, "Empty sets aren't allowed.");
+			errorListener.AddSemanticError(token, token, "Empty sets aren't allowed.");
 			throw new SemanticErrorException();
 		}
 
@@ -341,9 +337,8 @@ namespace ES.ON.Impression {
 			return @"$_";
 		}
 
-		public override string VisitUnrecognizedCharacterSequence([NotNull] TheParser.UnrecognizedCharacterSequenceContext context) {
-			var token = context.GetToken(TheParser.NEVER, 0).Symbol;
-			errorListener.AddLexicalError(token, "Unrecognized character sequence.");
+		public override string VisitLexicalError([NotNull] TheParser.LexicalErrorContext context) {
+			errorListener.AddLexicalError(context.start, context.stop, "Unrecognized character sequence.");
 			throw new LexerErrorException();
 		}
 
