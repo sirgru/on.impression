@@ -66,7 +66,6 @@ Empty literals ('') aren't allowed.
 | Imp:          | Regex:        |
 | ------------- | ------------- |
 | 'abc'         | abc           |
-| ------------  | ------------- |
 | /* comment */ | (?# comment ) |
 
 
@@ -179,11 +178,11 @@ Quantifiers thus use the same syntax for greedy and non-greedy matching.
 
 ### Alternation:
 
-| Imp:                             | Regex:                      | Explanation:         |
-| -------------------------------- | --------------------------- | -------------------- |
-| `'th'('e'|'is'|'at')`            | `th(e|is|at)`               | Any one alternative. |
-| `if expression then yes else no` | `(?(expression) yes | no )` | [1]                  |
-| `if $name then yes else no`      | `(?(name) yes | no )`       | [1]                  |
+| Imp:                             | Regex:                       | Explanation:         |
+| -------------------------------- | ---------------------------- | -------------------- |
+| `'th'('e'\|'is'\|'at')`          | `th(e\|is\|at)`              | Any one alternative. |
+| `if expression then yes else no` | `(?(expression) yes \| no )` | [1]                  |
+| `if $name then yes else no`      | `(?(name) yes \| no )`       | [1]                  |
 
 [1] Matches yes if the regular expression pattern or name designated by expression matches; otherwise, matches the optional no part. expression is interpreted as a zero-width assertion.
 
@@ -209,8 +208,8 @@ We always use m, n and s options and never use x option in the generated Regex. 
 | word       | \w+                       | Word.                               |
 | int        | \d+                       | Integral number.                    |
 | whitespace | \s+                       | At least 1 white space character.   |
-| bw         | `((?<=\W)(?=\w)|^(?=\w))` | Begin word.                         |
-| ew         | `((?<=\w)(?=\W)|(?=\w)$)` | End word.                           |
+| bw         | `((?<=\W)(?=\w)\|^(?=\w))` | Begin word.                         |
+| ew         | `((?<=\w)(?=\W)\|(?=\w)$)` | End word.                           |
 | c          | `[^\r\n]`                 | Match 1 character, except \r or \n. |
 | a          | `.` singleline            | Match any character.                |
 
@@ -254,7 +253,7 @@ Spaces, tabs and newlines have no meaning.
 A comma character can be used to arbitrarily separate elements in the expression, it will have no meaning and will be discarded like a space.
 
 
-### Authors:
+### Author:
 
 Grammar and implementation in C# created by Gojko Radonjić "Gru".
 
