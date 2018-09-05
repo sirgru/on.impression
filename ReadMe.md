@@ -4,6 +4,17 @@
 
 ON.Impression is a programming language for recognizing string patterns with regular grammar. It is effectively an alternative syntax to regular expressions.
 
+## Installation & Usage
+
+Via Package Manager:  
+`Install-Package On.Impression`  
+Via dotnet CLI:  
+`dotnet add package On.Impression`  
+
+Usage:  
+`using ES.ON.Impression;`  
+`string regex = ImpressionToRegex.Convert(impressionQueryString);`  
+
 
 ## Why should you know about this language?
 
@@ -127,7 +138,7 @@ Empty sets ([]) aren't allowed.
 | tail          | \z        | Match at the end of the string, including trailing whitespace.      |
 | last-match    | \G        | Match at the point where the previous match ended.                  |
 | wb            | \b        | Match on a word boundary.                                           |
-| not: wb       | \B        | Match not occur on a word boundary.                                 |
+| not: wb       | \B        | Match must not occur on a word boundary.                            |
 
 
 ### Grouping:
@@ -136,15 +147,15 @@ Variables can contain letter, numbers and underscore, and can be just a number.
 
 | Imp:                   | Regex:                   | Explanation:                                                  |
 | ---------------------- | ------------------------ | ------------------------------------------------------------- |
-| -                      | ( subexp )               | Captures the matched subexp and assigns it an index variable. |
-| subexpr as name        | (?<name> subexp )        | Captures the matched subexp into a named group.               |
+| -                      | ( subexpr )              | Captures the matched subexp and assigns it an index variable. |
+| subexpr as name        | (?<name> subexpr )       | Captures the matched subexp into a named group.               |
 | subexpr as name1:name2 | (?<name1-name2> subexpr) | Defines a balancing group definition.                         |
 | (subexpr)              | (?: subexpr )            | Defines a noncapturing  group.                                |
 | i: subexpr             | (?i: subexpr )           | Applies case invariance within subexpr.                       |
 | before: subexpr        | (?= subexpr )            | Positive lookahead.                                           |
 | not-before: subexpr    | (?! subexpr )            | Negative lookahead.                                           |
 | after: subexpr         | (?<= subexpr )           | Positive lookbehind.                                          |
-| not-after: subexpr     | (?<! subexpression )     | Negative lookbehind.                                          |
+| not-after: subexpr     | (?<! subexpr )           | Negative lookbehind.                                          |
 | atomic: subexpr        | (?> subexpr )            | Atomic (non-backtracking) subexpr.                            |
 
 
@@ -171,18 +182,18 @@ Quantifiers thus use the same syntax for greedy and non-greedy matching.
 
 ### Backreferences:
 
-| Imp:  | Regex:   | Explanation:                                                  |
-| ----- | -------- | ------------------------------------------------------------- |
-| $name | \k<name> | Named backreference. Matches the value of a named expression. |
+| Imp:  | Regex:     | Explanation:                                                  |
+| ----- | ---------- | ------------------------------------------------------------- |
+| $name | \k\<name\> | Named backreference. Matches the value of a named expression. |
 
 
 ### Alternation:
 
-| Imp:                             | Regex:                       | Explanation:         |
-| -------------------------------- | ---------------------------- | -------------------- |
-| `'th'('e'\|'is'\|'at')`          | `th(e\|is\|at)`              | Any one alternative. |
-| `if expression then yes else no` | `(?(expression) yes \| no )` | [1]                  |
-| `if $name then yes else no`      | `(?(name) yes \| no )`       | [1]                  |
+| Imp:                          | Regex:                       | Explanation:         |
+| ----------------------------- | ---------------------------- | -------------------- |
+| `'th'('e'\|'is'\|'at')`       | `th(e\|is\|at)`              | Any one alternative. |
+| `if (expression) yes else no` | `(?(expression) yes \| no )` | [1]                  |
+| `if $name  yes else no`       | `(?(name) yes \| no )`       | [1]                  |
 
 [1] Matches yes if the regular expression pattern or name designated by expression matches; otherwise, matches the optional no part. expression is interpreted as a zero-width assertion.
 
@@ -202,16 +213,16 @@ Quantifiers thus use the same syntax for greedy and non-greedy matching.
 
 We always use m, n and s options and never use x option in the generated Regex. We explicitly specify i option. 
 
-| Imp:       | Regex:                    | Explanation:                        |
-| ---------- | ------------------------- | ----------------------------------- |
-| nl         | \r?\n                     | OS-independent newline.             |
-| word       | \w+                       | Word.                               |
-| int        | \d+                       | Integral number.                    |
-| whitespace | \s+                       | At least 1 white space character.   |
+| Imp:       | Regex:                     | Explanation:                        |
+| ---------- | -------------------------- | ----------------------------------- |
+| nl         | \r?\n                      | OS-independent newline.             |
+| word       | \w+                        | Word.                               |
+| int        | \d+                        | Integral number.                    |
+| whitespace | \s+                        | At least 1 white space character.   |
 | bw         | `((?<=\W)(?=\w)\|^(?=\w))` | Begin word.                         |
 | ew         | `((?<=\w)(?=\W)\|(?=\w)$)` | End word.                           |
-| c          | `[^\r\n]`                 | Match 1 character, except \r or \n. |
-| a          | `.` singleline            | Match any character.                |
+| c          | `[^\r\n]`                  | Match 1 character, except \r or \n. |
+| a          | `.` singleline             | Match any character.                |
 
 Quantifiers can also have full, read-friendly names:
 
@@ -250,7 +261,7 @@ Ax expression consists of a series of sub-expressions. Subexpressions may be enc
 
 Spaces, tabs and newlines have no meaning.
 
-A comma character can be used to arbitrarily separate elements in the expression, it will have no meaning and will be discarded like a space.
+A comma character (`,`) can be used to arbitrarily separate elements in the expression, it will have no meaning and will be discarded like a space.
 
 
 ### Author:

@@ -2,6 +2,19 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
+    <PackageId>On.Impression</PackageId>
+    <Version>0.8.1</Version>
+    <Authors>Gru</Authors>
+    <Company>Ennoble Studios</Company>
+    <Product>ON.Impression</Product>
+    <Description>ON.Impression is a programming language for recognizing string patterns with regular grammar. It is effectively an alternative syntax to regular expressions.</Description>
+    <Copyright>Gojko Radonjić 2018</Copyright>
+    <PackageLicenseUrl>https://github.com/sirgru/on.impression/blob/master/License.txt</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/sirgru/on.impression</PackageProjectUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/sirgru/on.impression/master/Logo/Logo.png</PackageIconUrl>
+    <RepositoryUrl>https://github.com/sirgru/on.impression</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>regex</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
