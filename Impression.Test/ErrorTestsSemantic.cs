@@ -18,7 +18,7 @@ namespace Impression.Test {
 		}
 
 		[TestCase("  [] ", ExpectedResult = 2)]
-		[TestCase(" not: [] ", ExpectedResult = 6)]
+		[TestCase(" ! [] ", ExpectedResult = 3)]
 		public int EmptySet(string input) {
 			var ps = new ParserState(input);
 			var context = ps.parser.expressionSeq();

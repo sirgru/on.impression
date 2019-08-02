@@ -9,7 +9,6 @@ namespace ES.ON.Impression {
 		/// Converts the supplied string to a Regular Expression String, enclosed in required modifiers.
 		/// </summary>
 		/// <param name="input">A string in Impression format.</param>
-		/// <returns></returns>
 		public static string Convert(string input) {
 			return @"(?mns:" + ConvertNoOptions(input) +")";
 		}
@@ -18,7 +17,6 @@ namespace ES.ON.Impression {
 		/// Will convert the input to a Regular Expression String, but will not enclose it with reuired options. Used for testing purposes.
 		/// </summary>
 		/// <param name="input">A string in Impression format.</param>
-		/// <returns></returns>
 		public static string ConvertNoOptions(string input) {
 			var inputStream = new AntlrInputStream(input);
 			var lexer = new TheLexer(inputStream);

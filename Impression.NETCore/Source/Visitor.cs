@@ -151,16 +151,16 @@ namespace ES.ON.Impression {
 		public override string VisitEndLine([NotNull] TheParser.EndLineContext context) {
 			return @"$";
 		}
-		public override string VisitHead([NotNull] TheParser.HeadContext context) {
+		public override string VisitStartString([NotNull] TheParser.StartStringContext context) {
 			return @"\A";
 		}
-		public override string VisitTailAfterWS([NotNull] TheParser.TailAfterWSContext context) {
+		public override string VisitEndStringBeforeWS([NotNull] TheParser.EndStringBeforeWSContext context) {
 			return @"(?=\s*\z)";
 		}
-		public override string VisitTail([NotNull] TheParser.TailContext context) {
+		public override string VisitEndString([NotNull] TheParser.EndStringContext context) {
 			return @"\z";
 		}
-		public override string VisitLastMatch([NotNull] TheParser.LastMatchContext context) {
+		public override string VisitLastMatchEnd([NotNull] TheParser.LastMatchEndContext context) {
 			return @"\G";
 		}
 
@@ -216,30 +216,43 @@ namespace ES.ON.Impression {
 			if(n.number1 == 0 && n.number2 == 1) {
 				return "(" + Visit(context.expression()) + ")?";
 			}
-			if(n.number1 == n.number2 ) {
+			if(n.number1 == n.number2) {
 				return "(" + Visit(context.expression()) + "){" + n.number1 + "}";
+			}
+			if(n.number1 == int.MaxValue) {
+				return "(" + Visit(context.expression()) + "){0," + n.number2 + "}";
 			}
 			if(n.number2 == int.MaxValue) {
 				return "(" + Visit(context.expression()) + "){" + n.number1 + ",}";
 			}
-			if(n.number1 == int.MaxValue && n.number2 == 0) {
+
+			return "(" + Visit(context.expression()) + "){" + n.number1 + "," + n.number2 + "}";
+		}
+
+		public override string VisitLazyQuantifier([NotNull] TheParser.LazyQuantifierContext context) {
+			var inputRaw = context.LAZY_QUANTIFIER().GetText().Substring(1).ToCharArray();
+			var n = VisitorHelper.ExtractTwoNumbers(inputRaw);
+
+			if(n.number1 == 0 && n.number2 == int.MaxValue) {
 				return "(" + Visit(context.expression()) + ")*?";
 			}
-			if(n.number1 == int.MaxValue && n.number2 == 1) {
+			if(n.number1 == 1 && n.number2 == int.MaxValue) {
 				return "(" + Visit(context.expression()) + ")+?";
 			}
-			if(n.number1 == 1 && n.number2 == 0) {
+			if(n.number1 == 0 && n.number2 == 1) {
 				return "(" + Visit(context.expression()) + ")??";
 			}
+			if(n.number1 == n.number2) {
+				return "(" + Visit(context.expression()) + "){" + n.number1 + "}?";
+			}
 			if(n.number1 == int.MaxValue) {
-				return "(" + Visit(context.expression()) + "){" + n.number2 + ",}?";
+				return "(" + Visit(context.expression()) + "){0," + n.number2 + "}?";
+			}
+			if(n.number2 == int.MaxValue) {
+				return "(" + Visit(context.expression()) + "){" + n.number1 + ",}?";
 			}
 
-			if(n.number2 > n.number1) {
-				return "(" + Visit(context.expression()) + "){" + n.number1 + "," + n.number2 + "}";
-			} else {
-				return "(" + Visit(context.expression()) + "){" + n.number2 + "," + n.number1 + "}?";
-			}
+			return "(" + Visit(context.expression()) + "){" + n.number1 + "," + n.number2 + "}?";
 		}
 
 		public override string VisitAlternation([NotNull] TheParser.AlternationContext context) {
@@ -285,10 +298,10 @@ namespace ES.ON.Impression {
 		public override string VisitAnyChar([NotNull] TheParser.AnyCharContext context) {
 			return @".";
 		}
-		public override string VisitBeginWord([NotNull] TheParser.BeginWordContext context) {
+		public override string VisitWordBegin([NotNull] TheParser.WordBeginContext context) {
 			return @"((?<=\W)(?=\w)|^(?=\w))";
 		}
-		public override string VisitEndWord([NotNull] TheParser.EndWordContext context) {
+		public override string VisitWordEnd([NotNull] TheParser.WordEndContext context) {
 			return @"((?<=\w)(?=\W)|(?=\w)$)";
 		}
 

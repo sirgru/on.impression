@@ -22,7 +22,8 @@ expression
 	| expression NAME		# Naming
 	| expression RENAME		# Renaming
 	| grouping				# n__Grouping
-	| expression QUANTIFIER		# Quantifier
+	| expression QUANTIFIER			# Quantifier
+	| expression LAZY_QUANTIFIER	# LazyQuantifier
 	| expression ANY_GREEDY		# AnyGreedy
 	| expression ANY_LAZY		# AnyLazy
 	| expression ALL_GREEDY		# AllGreedy
@@ -47,15 +48,15 @@ set
 	: EMPTY_SET			# EmptySet
 	| SET				# SetWithContent
 	| RANGE_SET			# RangeSet
-	| set '+' set		# CombinationSet
+	| set SET_UNION set		# CombinationSet
 	;
 
 not_set: NOT set # SetNegative;
 
-subtr_set: (set	| not_set) '-' set		 # SubtractionSet;
+subtr_set: (set	| not_set) SET_DIFF set		 # SubtractionSet;
 
 type: CHAR_TYPE			# CharType
-	| NOT_CHAR_TYPE		# NotCharType
+	| NOT CHAR_TYPE		# NotCharType
 	;
 
 shorts
@@ -73,20 +74,20 @@ not_short
 	;
 
 anchors
-	: START				# StartLine
-	| END				# EndLine
-	| HEAD				# Head
-	| TAIL_AFTER_WS		# TailAfterWS
-	| TAIL				# Tail
-	| LAST_MATCH		# LastMatch
+	: START_LINE			# StartLine
+	| END_LINE				# EndLine
+	| START_STRING			# StartString
+	| END_STRING_BEFORE_WS	# EndStringBeforeWS
+	| END_STRING			# EndString
+	| LAST_MATCH_END		# LastMatchEnd
 	;
 
 grouping
 	: I	expression			# CaseInsensitive
 	| BEFORE expression		# Before
-	| NOT_BEFORE expression	# NotBefore
+	| NOT BEFORE expression	# NotBefore
 	| AFTER	expression		# After
-	| NOT_AFTER	expression	# NotAfter
+	| NOT AFTER	expression	# NotAfter
 	| ATOMIC expression		# Atomic
 	;
 
@@ -97,8 +98,8 @@ additions
 	| WHITESPACE	# Whitespace
 	| C_ANY_NOT_NL	# AnyNotNL
 	| C_ANY			# AnyChar
-	| BEGIN_WORD	# BeginWord
-	| END_WORD		# EndWord
+	| WORD_BEGIN	# WordBegin
+	| WORD_END		# WordEnd
 	;
 
 subst_special

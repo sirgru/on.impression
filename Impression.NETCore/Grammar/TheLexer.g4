@@ -16,27 +16,26 @@ SET: '[' (ESCAPED_CLOSE_BRACKET	| ESCAPED_DBL_BACKSLASH	| .)*? ']';
 
 COMMENT: '/*' .*? '*/' -> skip;
 
-NOT: 'not:';
+NOT: '!';
 
-SET_UNION: '+';
+SET_UNION: 'u';
 SET_DIFF: '-';
 
 fragment SEP: (	' '	| '\t')+;
 fragment OPT_SEP: (	' '	| '\t')*;
 CHAR_TYPE: 'type:' OPT_SEP [a-zA-Z-]+;
-NOT_CHAR_TYPE: 'not-type:' OPT_SEP [a-zA-Z-]+;
 
 C_WORD:	'w';
 C_WHITE_SPACE: 'ws';
 C_DIGIT: 'd';
-WORD_BOUNDARY: 'wb';
+WORD_BOUNDARY: ',';
 
-START: 'start';
-END: 'end';
-HEAD: 'head';
-TAIL_AFTER_WS: 'tail-after-ws';
-TAIL: 'tail';
-LAST_MATCH:	'last-match';
+START_LINE: '<';
+END_LINE: '>';
+START_STRING: '<<';
+END_STRING_BEFORE_WS: '>>_';
+END_STRING: '>>';
+LAST_MATCH_END:	'last-match-end';
 
 fragment ID: [a-zA-Z0-9_]+;
 NAME: 'as' SEP ID;
@@ -47,9 +46,7 @@ PAREN_CLOSE: ')';
 
 I: 'i:';
 BEFORE:	'before:';
-NOT_BEFORE:	'not-before:';
 AFTER: 'after:';
-NOT_AFTER: 'not-after:';
 ATOMIC:	'atomic:';
 
 fragment DIGIT:	[0-9];
@@ -59,6 +56,12 @@ QUANTIFIER
 	| 'x' OPT_SEP (DIGIT)? OPT_SEP '..'	OPT_SEP	DIGIT
 	;
 
+LAZY_QUANTIFIER
+	: '.x' OPT_SEP DIGIT
+	| '.x' OPT_SEP DIGIT	OPT_SEP	'..' OPT_SEP (DIGIT)?
+	| '.x' OPT_SEP (DIGIT)? OPT_SEP '..'	OPT_SEP	DIGIT
+	;
+
 IF:	'if';
 ELSE: 'else';
 VAR_USE: '$' ID;
@@ -66,18 +69,18 @@ VAR_USE: '$' ID;
 NL:	'nl';
 WORD: 'word';
 INT: 'int';
-WHITESPACE:	'whitespace';
+WHITESPACE:	'space';
 C_ANY_NOT_NL: 'c';
 C_ANY: 'a';
-BEGIN_WORD:	'bw';
-END_WORD: 'ew';
+WORD_BEGIN:	'wb';
+WORD_END: 'we';
 
-ANY_GREEDY:	':any';
-ANY_LAZY: ':any-lazy';
-ALL_GREEDY:	':all';
-ALL_LAZY: ':all-lazy';
-MAYBE_GREEDY: ':maybe';
-MAYBE_LAZY:	':maybe-lazy';
+ANY_GREEDY:	':any' | '*';
+ANY_LAZY: ':any-lazy' | '.*';
+ALL_GREEDY:	':all' | '+';
+ALL_LAZY: ':all-lazy' | '.+';
+MAYBE_GREEDY: ':maybe' | '?';
+MAYBE_LAZY:	':maybe-lazy' | '.?';
 
 NAMED_SUBST: '${' ID '}';
 MATCH: 'match';
@@ -87,6 +90,6 @@ INPUT: 'input';
 
 RANGE_SET: . '..' .;
 
-WS:	(' ' | '\t'	| '\f' | '\r' |	'\n' | ',') -> channel(HIDDEN);
+WS:	(' ' | '\t'	| '\f' | '\r' |	'\n' | ';') -> channel(HIDDEN);
 
 NEVER: .;

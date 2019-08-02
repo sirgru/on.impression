@@ -41,7 +41,7 @@ namespace ES.ON.Impression {
 			string resultStr = "";
 			while(index < charArray.Length && char.IsDigit(charArray[index])) resultStr += charArray[index++];
 			int result = int.Parse(resultStr);
-			return new ResultAndIndex() { result = result, index = index };
+			return new ResultAndIndex { result = result, index = index };
 		}
 	}
 }

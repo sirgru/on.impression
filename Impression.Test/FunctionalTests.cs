@@ -26,7 +26,7 @@ namespace Impression.Test {
 
 		[Test]
 		public void BasicNegativeSets() {
-			Assert.AreEqual(@"[^ab*]", ImpressionToRegex.ConvertNoOptions(@" not: [ab*]"));
+			Assert.AreEqual(@"[^ab*]", ImpressionToRegex.ConvertNoOptions(@"![ab*]"));
 		}
 
 		[Test]
@@ -36,7 +36,7 @@ namespace Impression.Test {
 
 		[Test]
 		public void BasicCombinationSet() {
-			Assert.AreEqual(@"[az]", ImpressionToRegex.ConvertNoOptions(@"[a] + [z]"));
+			Assert.AreEqual(@"[az]", ImpressionToRegex.ConvertNoOptions(@"[a] u [z]"));
 		}
 
 		[Test]
@@ -46,12 +46,13 @@ namespace Impression.Test {
 
 		[Test]
 		public void AdvancedSet() {
-			Assert.AreEqual(@"[a-zA-Z123]", ImpressionToRegex.ConvertNoOptions(@"a..z + A..Z + [123]"));
+			Assert.AreEqual(@"[a-zA-Z123]", ImpressionToRegex.ConvertNoOptions(@"a..z u A..Z u [123]"));
+			Assert.AreEqual(@"[a-zA-Z123]", ImpressionToRegex.ConvertNoOptions(@"a..zuA..Zu[123]"));
 		}
 
 		[Test]
 		public void AdvancedSubtraction() {
-			Assert.AreEqual(@"[a-z0-9-[p23]]", ImpressionToRegex.ConvertNoOptions(@"a..z + 0..9 - [p] + [23]"));
+			Assert.AreEqual(@"[a-z0-9-[p23]]", ImpressionToRegex.ConvertNoOptions(@"a..z u 0..9 - [p] u [23]"));
 		}
 
 		[Test]
@@ -61,22 +62,22 @@ namespace Impression.Test {
 
 		[Test]
 		public void BasicNotType() {
-			Assert.AreEqual(@"\P{Lu}", ImpressionToRegex.ConvertNoOptions(@"not-type:		  Lu"));
+			Assert.AreEqual(@"\P{Lu}", ImpressionToRegex.ConvertNoOptions(@"!type:		  Lu"));
 		}
 
 		[Test]
 		public void ShortsTests() {
-			Assert.AreEqual(@"\w\s\d\b", ImpressionToRegex.ConvertNoOptions(@"w ws d wb"));
+			Assert.AreEqual(@"\w\s\d\b", ImpressionToRegex.ConvertNoOptions(@"w ws d ,"));
 		}
 
 		[Test]
 		public void NotShortsTests() {
-			Assert.AreEqual(@"\W\S\D\B", ImpressionToRegex.ConvertNoOptions(@"not: w not: ws not: d not: wb"));
+			Assert.AreEqual(@"\W\S\D\B", ImpressionToRegex.ConvertNoOptions(@"!w ! ws ! d !,"));
 		}
 
 		[Test]
 		public void AnchorsTests() {
-			Assert.AreEqual(@"^$\A(?=\s*\z)\z\G", ImpressionToRegex.ConvertNoOptions(@"start end head tail-after-ws tail last-match"));
+			Assert.AreEqual(@"^$\A(?=\s*\z)\z\G", ImpressionToRegex.ConvertNoOptions(@"<><<>>_>>last-match-end"));
 		}
 
 		[Test]
@@ -108,9 +109,9 @@ namespace Impression.Test {
 		public void BasicGrouping() {
 			Assert.AreEqual(@"(?i:a)", ImpressionToRegex.ConvertNoOptions(@"i: 'a'"));
 			Assert.AreEqual(@"(?=a)", ImpressionToRegex.ConvertNoOptions(@"before: 'a'"));
-			Assert.AreEqual(@"(?!a)", ImpressionToRegex.ConvertNoOptions(@"not-before: 'a'"));
+			Assert.AreEqual(@"(?!a)", ImpressionToRegex.ConvertNoOptions(@"!	before: 'a'"));
 			Assert.AreEqual(@"(?<=a)", ImpressionToRegex.ConvertNoOptions(@"after: 'a'"));
-			Assert.AreEqual(@"(?<!a)", ImpressionToRegex.ConvertNoOptions(@"not-after: 'a'"));
+			Assert.AreEqual(@"(?<!a)", ImpressionToRegex.ConvertNoOptions(@"!after: 'a'"));
 			Assert.AreEqual(@"(?>a)", ImpressionToRegex.ConvertNoOptions(@"atomic: 'a'"));
 		}
 
@@ -121,12 +122,16 @@ namespace Impression.Test {
 			Assert.AreEqual(@"(ab)?", ImpressionToRegex.ConvertNoOptions(@"'ab' x 0..1"));
 			Assert.AreEqual(@"(ab){3}", ImpressionToRegex.ConvertNoOptions(@"'ab' x 3"));
 			Assert.AreEqual(@"(ab){3,}", ImpressionToRegex.ConvertNoOptions(@"'ab' x 3.."));
-			Assert.AreEqual(@"(ab)*?", ImpressionToRegex.ConvertNoOptions(@"'ab' x ..0"));
-			Assert.AreEqual(@"(ab)+?", ImpressionToRegex.ConvertNoOptions(@"'ab' x ..1"));
-			Assert.AreEqual(@"(ab)??", ImpressionToRegex.ConvertNoOptions(@"'ab' x 1..0"));
-			Assert.AreEqual(@"(ab){3,}?", ImpressionToRegex.ConvertNoOptions(@"'ab' x ..3"));
 			Assert.AreEqual(@"(ab){3,5}", ImpressionToRegex.ConvertNoOptions(@"'ab' x 3..5"));
-			Assert.AreEqual(@"(ab){3,5}?", ImpressionToRegex.ConvertNoOptions(@"'ab' x 5..3"));
+			Assert.AreEqual(@"(ab){0,5}", ImpressionToRegex.ConvertNoOptions(@"'ab' x ..5"));
+
+			Assert.AreEqual(@"(ab)*?", ImpressionToRegex.ConvertNoOptions(@"'ab' .x 0.."));
+			Assert.AreEqual(@"(ab)+?", ImpressionToRegex.ConvertNoOptions(@"'ab' .x 1.."));
+			Assert.AreEqual(@"(ab)??", ImpressionToRegex.ConvertNoOptions(@"'ab' .x 0..1"));
+			Assert.AreEqual(@"(ab){3}?", ImpressionToRegex.ConvertNoOptions(@"'ab' .x 3"));
+			Assert.AreEqual(@"(ab){3,}?", ImpressionToRegex.ConvertNoOptions(@"'ab' .x 3.."));
+			Assert.AreEqual(@"(ab){3,5}?", ImpressionToRegex.ConvertNoOptions(@"'ab' .x 3..5"));
+			Assert.AreEqual(@"(ab){0,5}?", ImpressionToRegex.ConvertNoOptions(@"'ab' .x ..5"));
 		}
 
 		[Test]
@@ -152,21 +157,32 @@ namespace Impression.Test {
 			Assert.AreEqual(@"\r?\n", ImpressionToRegex.ConvertNoOptions(@"nl"));
 			Assert.AreEqual(@"\w+", ImpressionToRegex.ConvertNoOptions(@"word"));
 			Assert.AreEqual(@"\d+", ImpressionToRegex.ConvertNoOptions(@"int"));
-			Assert.AreEqual(@"\s+", ImpressionToRegex.ConvertNoOptions(@"whitespace"));
+			Assert.AreEqual(@"\s+", ImpressionToRegex.ConvertNoOptions(@"space"));
 			Assert.AreEqual(@"[^\r\n]", ImpressionToRegex.ConvertNoOptions(@"c"));
 			Assert.AreEqual(@".", ImpressionToRegex.ConvertNoOptions(@"a"));
-			Assert.AreEqual(@"((?<=\W)(?=\w)|^(?=\w))", ImpressionToRegex.ConvertNoOptions(@"bw"));
-			Assert.AreEqual(@"((?<=\w)(?=\W)|(?=\w)$)", ImpressionToRegex.ConvertNoOptions(@"ew"));
+			Assert.AreEqual(@"((?<=\W)(?=\w)|^(?=\w))", ImpressionToRegex.ConvertNoOptions(@"wb"));
+			Assert.AreEqual(@"((?<=\w)(?=\W)|(?=\w)$)", ImpressionToRegex.ConvertNoOptions(@"we"));
 		}
 
 		[Test]
 		public void Additions2Tests() {
 			Assert.AreEqual(@"(a)*", ImpressionToRegex.ConvertNoOptions(@"'a' :any"));
-			Assert.AreEqual(@"(a)*?", ImpressionToRegex.ConvertNoOptions(@"'a' :any-lazy"));
+			Assert.AreEqual(@"(a)*", ImpressionToRegex.ConvertNoOptions(@"'a'*"));
+
+			Assert.AreEqual(@"([1-2])*?", ImpressionToRegex.ConvertNoOptions(@"(1..2) :any-lazy"));
+			Assert.AreEqual(@"([1-2])*?", ImpressionToRegex.ConvertNoOptions(@"(1..2).*"));
+
 			Assert.AreEqual(@"(a)+", ImpressionToRegex.ConvertNoOptions(@"'a' :all"));
+			Assert.AreEqual(@"(a)+", ImpressionToRegex.ConvertNoOptions(@"'a'+"));
+
 			Assert.AreEqual(@"(a)+?", ImpressionToRegex.ConvertNoOptions(@"'a' :all-lazy"));
+			Assert.AreEqual(@"(a)+?", ImpressionToRegex.ConvertNoOptions(@"'a'.+"));
+
 			Assert.AreEqual(@"(a)?", ImpressionToRegex.ConvertNoOptions(@"'a' :maybe"));
+			Assert.AreEqual(@"(a)?", ImpressionToRegex.ConvertNoOptions(@"'a'?"));
+
 			Assert.AreEqual(@"(a)??", ImpressionToRegex.ConvertNoOptions(@"'a' :maybe-lazy"));
+			Assert.AreEqual(@"(a)??", ImpressionToRegex.ConvertNoOptions(@"'a'.?"));
 		}
 
 		[Test]
@@ -184,8 +200,8 @@ namespace Impression.Test {
 		}
 
 		[Test]
-		public void SeparationByComma() {
-			Assert.AreEqual(@"ab", ImpressionToRegex.ConvertNoOptions(@"'a' , 'b'"));
+		public void SeparationBySemicolon() {
+			Assert.AreEqual(@"ab", ImpressionToRegex.ConvertNoOptions(@"'a';'b'"));
 		}
 	}
 }

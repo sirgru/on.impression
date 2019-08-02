@@ -4,7 +4,7 @@ namespace Impression.Test {
 	[TestFixture]
 	public class ErrorTestsParsing {
 		
-		[TestCase("not: not: [abc]")]
+		[TestCase("! ![abc]")]
 		public void ParsingError(string input) {
 			var ps = new ParserState(input);
 			var context = ps.parser.expressionSeq();
