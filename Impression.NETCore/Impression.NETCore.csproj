@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <PackageId>On.Impression</PackageId>
-    <Version>0.8.1</Version>
+    <Version>2.0.0</Version>
     <Authors>Gru</Authors>
     <Company>Ennoble Studios</Company>
     <Product>ON.Impression</Product>
@@ -15,6 +15,7 @@
     <RepositoryUrl>https://github.com/sirgru/on.impression</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>regex</PackageTags>
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
